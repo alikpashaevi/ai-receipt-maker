@@ -6,6 +6,6 @@ spring:
       chat:
         base-url: https://generativelanguage.googleapis.com
         completions-path: /v1beta/openai/chat/completions
-        api-key: ${GEMINI-API-KEY-RECEIPT-MAKER}
         options:
           model: gemini-2.0-flash
+      api-key: ${GEMINI_API_KEY}
