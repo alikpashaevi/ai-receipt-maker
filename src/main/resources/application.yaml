@@ -1,11 +1,19 @@
 spring:
   application:
     name: receipt-maker
+  datasource:
+    url: ${RECEIPT_MAKER_DB_URL}
+    username: ${RECEIPT_MAKER_USER}
+    password: ${RECEIPT_MAKER_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    default-schema: receipts
   ai:
     openai:
       chat:
         base-url: https://generativelanguage.googleapis.com
         completions-path: /v1beta/openai/chat/completions
-        api-key: ${GEMINI-API-KEY-RECEIPT-MAKER}
+        api-key: ${GEMINI_API_KEY}
         options:
           model: gemini-2.0-flash
