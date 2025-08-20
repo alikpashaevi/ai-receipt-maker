@@ -22,7 +22,8 @@ extra["springAiVersion"] = "1.0.1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.projectlombok:lombok:1.18.38")
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
