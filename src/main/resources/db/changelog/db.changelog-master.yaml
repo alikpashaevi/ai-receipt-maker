@@ -1,2 +1,5 @@
 databaseChangeLog:
-  - 
+  - include:
+      file: db/changelog/scripts/01-CREATE-USERS-AND-ROLES-TABLES.sql
+  - include:
+      file: db/changelog/scripts/02-ADD-ROLES.sql
