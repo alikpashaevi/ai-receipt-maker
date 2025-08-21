@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/scripts/02-ADD-ROLES.sql
   - include:
         file: db/changelog/scripts/03-CREATE-RECIPES-TABLE.sql
+  - include:
+      file: db/changelog/scripts/04-CREATE-FAVORITES-AND-HISTORY-TABLES.sql

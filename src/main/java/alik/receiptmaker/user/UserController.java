@@ -4,10 +4,7 @@ import alik.receiptmaker.user.model.UserRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static alik.receiptmaker.constants.AuthorizationConstants.ADMIN;
 
@@ -22,6 +19,11 @@ public class UserController {
     @PostMapping
     public void createUser(@RequestBody @Valid UserRequest request) {
         userService.createUser(request);
+    }
+
+    @PostMapping("/favorites/{id}")
+    public void addToFavorites(@RequestParam String username, @PathVariable Long id) {
+        userService.addToFavorites(username, id);
     }
 
 }

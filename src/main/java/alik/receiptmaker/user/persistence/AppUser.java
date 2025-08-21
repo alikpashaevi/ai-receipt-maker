@@ -1,10 +1,13 @@
 package alik.receiptmaker.user.persistence;
 
+import alik.receiptmaker.persistence.Recipes;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,6 +35,21 @@ public class AppUser {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private Set<Recipes> favorites = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_history",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private List<Recipes> history = new ArrayList<>();
 
     @Override
     public String toString() {

@@ -78,4 +78,8 @@ public class RecipeService {
     public List<Recipes> getRecipes() {
         return recipesRepo.findAll();
     }
+
+    public Recipes getRecipeById(long id) {
+        return recipesRepo.findById(id).orElse(null);
+    }
 }

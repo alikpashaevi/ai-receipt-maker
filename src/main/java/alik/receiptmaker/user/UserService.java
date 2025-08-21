@@ -1,5 +1,7 @@
 package alik.receiptmaker.user;
 
+import alik.receiptmaker.persistence.Recipes;
+import alik.receiptmaker.service.RecipeService;
 import alik.receiptmaker.user.model.UserRequest;
 import alik.receiptmaker.user.persistence.AppUser;
 import alik.receiptmaker.user.persistence.AppUserRepo;
@@ -15,6 +17,7 @@ public class UserService {
 
     private final AppUserRepo appUserRepo;
     private final PasswordEncoder passwordEncoder;
+    private final RecipeService recipeService;
     private final RoleService roleService;
 
     public void createUser(UserRequest request) {
@@ -37,6 +40,15 @@ public class UserService {
     public AppUser getUser(String username) {
         return appUserRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public void addToFavorites(String username, Long receiptId) {
+        AppUser user = getUser(username);
+        Recipes recipeToAdd = recipeService.getRecipeById(receiptId);
+        if (recipeToAdd != null) {
+            user.getFavorites().add(recipeToAdd);
+        }
+        appUserRepo.save(user);
     }
 
 
