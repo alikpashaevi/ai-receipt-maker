@@ -16,7 +16,7 @@ spring:
         completions-path: /v1beta/openai/chat/completions
         options:
           model: gemini-2.0-flash
-      api-key: ${GEMINI_API_KEY}
+      api-key: AIzaSyBGyBE4_joQgLo2mFWtaophlEDVcJqzmrg
 
 jwt:
   secret-key: ${JAVA_COURSE_JWT_KEY}
