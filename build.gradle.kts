@@ -26,6 +26,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.38")
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
 
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.19.2")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.postgresql:postgresql:42.7.4")
