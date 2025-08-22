@@ -3,6 +3,7 @@ package alik.receiptmaker.service;
 import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.persistence.RecipesRepo;
+import alik.receiptmaker.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.model.ChatModel;
@@ -18,6 +19,7 @@ public class RecipeService {
     private final ChatModel chatModel;
     private final RecipesRepo recipesRepo;
     private final ObjectMapper objectMapper;
+    private final UserService userService;
 
     public RecipeResponse getResponse(List<String> ingredients, boolean vegetarian, List<String> allergies) {
 
@@ -53,10 +55,14 @@ public class RecipeService {
             String trimmedString = chatResponse.substring(startIndex, endIndex + 1);
             try {
                 RecipeResponse recipe = objectMapper.readValue(trimmedString, RecipeResponse.class);
-                saveRecipe(recipe);
+                if (recipesRepo.findByDishName(recipe.getDish_name()) != null) {
+                    saveRecipe(recipe);
+                }
+                // add to user history
+                userService.addToHistory(findByDishName(recipe.getDish_name()).getId());
                 return recipe;
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
         return null;
@@ -81,5 +87,9 @@ public class RecipeService {
 
     public Recipes getRecipeById(long id) {
         return recipesRepo.findById(id).orElse(null);
+    }
+
+    public Recipes findByDishName(String name) {
+        return recipesRepo.findByDishName(name);
     }
 }

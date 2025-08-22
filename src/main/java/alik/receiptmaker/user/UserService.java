@@ -1,5 +1,6 @@
 package alik.receiptmaker.user;
 
+import alik.receiptmaker.components.GetUsername;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.service.RecipeService;
 import alik.receiptmaker.user.model.UserRequest;
@@ -42,11 +43,35 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public void addToFavorites(String username, Long receiptId) {
+    public void addToFavorites(Long receiptId) {
+        String username = GetUsername.getUsernameFromToken();
+        System.out.println("Username from token: " + username);
         AppUser user = getUser(username);
         Recipes recipeToAdd = recipeService.getRecipeById(receiptId);
         if (recipeToAdd != null) {
             user.getFavorites().add(recipeToAdd);
+        }
+        appUserRepo.save(user);
+    }
+
+    public void removeFromFavorites(Long  receiptId) {
+        String username = GetUsername.getUsernameFromToken();
+        System.out.println("Username from token: " + username);
+        AppUser user = getUser(username);
+        Recipes recipeToRemove = recipeService.getRecipeById(receiptId);
+        if (recipeToRemove != null) {
+            user.getFavorites().remove(recipeToRemove);
+        }
+        appUserRepo.save(user);
+    }
+
+    public void addToHistory(Long receiptId) {
+        String username = GetUsername.getUsernameFromToken();
+        System.out.println("Username from token: " + username);
+        AppUser user = getUser(username);
+        Recipes recipeToAdd = recipeService.getRecipeById(receiptId);
+        if (recipeToAdd != null) {
+            user.getHistory().add(recipeToAdd);
         }
         appUserRepo.save(user);
     }
