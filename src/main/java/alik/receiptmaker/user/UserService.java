@@ -1,6 +1,8 @@
 package alik.receiptmaker.user;
 
+import alik.receiptmaker.components.GetRecipeById;
 import alik.receiptmaker.components.GetUsername;
+import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.service.RecipeService;
 import alik.receiptmaker.user.model.UserRequest;
@@ -18,25 +20,23 @@ public class UserService {
 
     private final AppUserRepo appUserRepo;
     private final PasswordEncoder passwordEncoder;
-    private final RecipeService recipeService;
+//    private final RecipeService recipeService;
+    private final GetRecipeById getRecipeById;
     private final RoleService roleService;
 
-    public void createUser(UserRequest request) {
-        AppUser user = new AppUser();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        user.setRoles(request.getRoleIds().stream()
-                .map(roleService::getRole)
-                .collect(Collectors.toSet())
-        );
-
-        if (appUserRepo.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("User with this username already exists");
-        }
-
-        appUserRepo.save(user);
-    }
+//    public void createUser(UserRequest request) {
+//        AppUser user = new AppUser();
+//        user.setUsername(request.getUsername());
+//        user.setPassword(passwordEncoder.encode(request.getPassword()));
+//
+//        user.setRoles(roleService.getRole(request.getRoleIds()));
+//
+//        if (appUserRepo.existsByUsername(user.getUsername())) {
+//            throw new RuntimeException("User with this username already exists");
+//        }
+//
+//        appUserRepo.save(user);
+//    }
 
     public AppUser getUser(String username) {
         return appUserRepo.findByUsername(username)
@@ -47,7 +47,7 @@ public class UserService {
         String username = GetUsername.getUsernameFromToken();
         System.out.println("Username from token: " + username);
         AppUser user = getUser(username);
-        Recipes recipeToAdd = recipeService.getRecipeById(receiptId);
+        Recipes recipeToAdd = getRecipeById.getRecipeById(receiptId);
         if (recipeToAdd != null) {
             user.getFavorites().add(recipeToAdd);
         }
@@ -58,21 +58,24 @@ public class UserService {
         String username = GetUsername.getUsernameFromToken();
         System.out.println("Username from token: " + username);
         AppUser user = getUser(username);
-        Recipes recipeToRemove = recipeService.getRecipeById(receiptId);
+        Recipes recipeToRemove = getRecipeById.getRecipeById(receiptId);
         if (recipeToRemove != null) {
             user.getFavorites().remove(recipeToRemove);
         }
         appUserRepo.save(user);
     }
 
-    public void addToHistory(Long receiptId) {
+    public void addToHistory(RecipeResponse recipe) {
         String username = GetUsername.getUsernameFromToken();
         System.out.println("Username from token: " + username);
         AppUser user = getUser(username);
-        Recipes recipeToAdd = recipeService.getRecipeById(receiptId);
-        if (recipeToAdd != null) {
-            user.getHistory().add(recipeToAdd);
-        }
+        Recipes recipeToAdd = new Recipes();
+        recipeToAdd.setName(recipe.getDish_name());
+        recipeToAdd.setIngredients(recipe.getIngredients());
+        recipeToAdd.setInstructions(recipe.getInstructions());
+        recipeToAdd.setEstimatedTime(recipe.getEstimated_time_minutes());
+        recipeToAdd.setServings(recipe.getServings());
+        user.getHistory().add(recipeToAdd);
         appUserRepo.save(user);
     }
 
