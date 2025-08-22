@@ -21,19 +21,13 @@ public class RecipeController {
 
 
     @GetMapping("/ask-ai")
-    public RecipeResponse getResponse(@RequestParam List<String> ingredients,
-                                      @RequestParam boolean vegetarian,
-                                      @RequestParam(required = false) List<String> allergies) {
-        return recipeService.getResponse(ingredients, vegetarian, allergies);
+    public RecipeResponse getResponse(@RequestParam List<String> ingredients) {
+        return recipeService.getResponse(ingredients);
     }
 
     @GetMapping
     public List<Recipes> getRecipes() {
         return recipeService.getRecipes();
     }
-
-
-
-
 
 }

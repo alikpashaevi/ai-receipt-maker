@@ -23,9 +23,11 @@ public class RegisterService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        user.setRoles(user.getRoles().stream()
-                .map(roleId -> roleService.getRole(1L)).collect(Collectors.toSet())
-        );
+
+
+        user.setRoles(roleService.getRole(2L));
+
+        System.out.println(user.getRoles());
 
         if (appUserRepo.existsByUsername(user.getUsername())) {
             throw new RuntimeException("User with this username already exists");
