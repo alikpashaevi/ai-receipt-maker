@@ -22,8 +22,13 @@ public class UserController {
     }
 
     @PostMapping("/favorites/{id}")
-    public void addToFavorites(@RequestParam String username, @PathVariable Long id) {
-        userService.addToFavorites(username, id);
+    public void addToFavorites(@PathVariable Long id) {
+        userService.addToFavorites(id);
+    }
+
+    @DeleteMapping("/favorites/{id}")
+    public void removeFromFavorites(@PathVariable Long id) {
+        userService.removeFromFavorites(id);
     }
 
 }
