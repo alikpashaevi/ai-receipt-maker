@@ -11,5 +11,7 @@ public interface RecipesRepo extends JpaRepository<Recipes, Long> {
     @Query("SELECT r FROM Recipes r WHERE r.name = :dishName" )
     Optional<Recipes> findByDishName(String dishName);
 
+    // exists by dish name
+    boolean existsByName(String dishName);
 
 }

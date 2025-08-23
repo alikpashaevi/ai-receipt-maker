@@ -6,10 +6,7 @@ import alik.receiptmaker.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static alik.receiptmaker.constants.AuthorizationConstants.USER_OR_ADMIN;
 
@@ -21,9 +18,21 @@ public class UserInfoController {
 
     private final UserInfoService userInfoService;
 
+    @GetMapping
+    public ResponseEntity<UserInfo> getUserInfo() {
+        UserInfo userInfo = userInfoService.getUserInfo();
+        return ResponseEntity.ok(userInfo);
+    }
+
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody UserInfoRequest userInfoRequest) {
         userInfoService.addUserInfo(userInfoRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody UserInfoRequest userInfoRequest) {
+        userInfoService.updateUserInfo(userInfoRequest);
         return ResponseEntity.ok().build();
     }
 
