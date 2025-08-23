@@ -8,4 +8,4 @@ databaseChangeLog:
   - include:
       file: db/changelog/scripts/04-CREATE-FAVORITES-AND-HISTORY-TABLES.sql
   - include:
-        file: db/changelog/scripts/05-CREATE-USER-INFO-TABLE.sql
+      file: db/changelog/scripts/05-CREATE-USER-INFO-TABLE.sql
