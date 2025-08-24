@@ -57,6 +57,7 @@ public class UserHistoryService {
             userHistory.setRecipe(recipeToAdd);
             userHistory.setViewedAt(LocalDateTime.now());
 
+            // TODO: correct the error here
             userHistoryRepo.save(userHistory);
         } else {
             throw new RuntimeException("Recipe with this name does not exist");

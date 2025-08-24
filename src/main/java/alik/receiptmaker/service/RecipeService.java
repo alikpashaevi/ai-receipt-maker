@@ -26,6 +26,7 @@ public class RecipeService {
     private final UserService userService;
     private final UserHistoryService userHistoryService;
     private final UserInfoService userInfoService;
+    private final NutritionService nutritionService;
 
     public RecipeResponse getResponse(List<String> ingredients) {
 
@@ -54,7 +55,7 @@ public class RecipeService {
 
 
         String chatResponse = "{\n" +
-                "  \"dish_name\": \"Chicken and Broccoli Stir-fry\",\n" +
+                "  \"dish_name\": \"Chicken and Broccoli\",\n" +
                 "  \"ingredients\": [\n" +
                 "    \"2 boneless, skinless chicken breasts, cut into 1-inch pieces\",\n" +
                 "    \"1 large head of broccoli, cut into florets\",\n" +
@@ -80,7 +81,7 @@ public class RecipeService {
 //        String chatResponse = chatModel.call(
 //                "You are a helpful cooking assistant. \n" +
 //                "The user will provide a list of ingredients. \n" +
-//                "Suggest one dish they can cook, with step-by-step instructions. \n" +
+//                "Suggest one dish they can cook, with step-by-step instructions. The dish name should be precise \n" +
 //                "\n" +
 //                "⚠️ IMPORTANT: Return the response in **valid JSON only** with this exact structure:\n" +
 //                "{\n" +
@@ -109,6 +110,7 @@ public class RecipeService {
                 if (!recipesRepo.existsByName(recipe.getDish_name())) {
                     saveRecipe(recipe);
                 }
+                System.out.println(nutritionService.getNutritionInfo(recipe));
                 // add to user history
                 userHistoryService.addToHistory(recipe.getDish_name());
                 return recipe;
@@ -127,6 +129,7 @@ public class RecipeService {
         recipe.setInstructions(recipeResponse.getInstructions());
         recipe.setEstimatedTime(recipeResponse.getEstimated_time_minutes());
         recipe.setServings(recipeResponse.getServings());
+        recipe.setNutrition(recipeResponse.getNutrition());
 
         recipesRepo.save(recipe);
     }

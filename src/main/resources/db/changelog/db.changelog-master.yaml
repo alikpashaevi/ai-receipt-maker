@@ -9,3 +9,7 @@ databaseChangeLog:
       file: db/changelog/scripts/04-CREATE-FAVORITES-AND-HISTORY-TABLES.sql
   - include:
       file: db/changelog/scripts/05-CREATE-USER-INFO-TABLE.sql
+  - include:
+        file: db/changelog/scripts/06-CREATE-NUTRITION-TABLE.sql
+  - include:
+        file: db/changelog/scripts/07-ADD-NUTRITION-ID-TO-RECIPES-TABLE.sql

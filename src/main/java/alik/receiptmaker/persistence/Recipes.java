@@ -40,4 +40,8 @@ public class Recipes {
     @Column(name = "servings")
     private int servings;
 
+    @OneToOne
+    @JoinColumn(name = "nutrition_id", referencedColumnName = "id")
+    private Nutrition nutrition;
+
 }
