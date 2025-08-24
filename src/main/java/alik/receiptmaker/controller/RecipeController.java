@@ -1,5 +1,6 @@
 package alik.receiptmaker.controller;
 
+import alik.receiptmaker.model.NutritionAndRecipe;
 import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.service.RecipeService;
@@ -21,7 +22,7 @@ public class RecipeController {
 
 
     @GetMapping("/ask-ai")
-    public RecipeResponse getResponse(@RequestParam List<String> ingredients) {
+    public NutritionAndRecipe getResponse(@RequestParam List<String> ingredients) {
         return recipeService.getResponse(ingredients);
     }
 

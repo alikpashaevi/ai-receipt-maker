@@ -1,7 +1,10 @@
 package alik.receiptmaker.service;
 
 import alik.receiptmaker.components.GetUsername;
+import alik.receiptmaker.model.NutritionAndRecipe;
+import alik.receiptmaker.model.NutritionResponse;
 import alik.receiptmaker.model.RecipeResponse;
+import alik.receiptmaker.persistence.Nutrition;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.persistence.RecipesRepo;
 import alik.receiptmaker.persistence.UserInfo;
@@ -28,7 +31,7 @@ public class RecipeService {
     private final UserInfoService userInfoService;
     private final NutritionService nutritionService;
 
-    public RecipeResponse getResponse(List<String> ingredients) {
+    public NutritionAndRecipe getResponse(List<String> ingredients) {
 
         // get user preferences
         AppUser user = userService.getUser(GetUsername.getUsernameFromToken());
@@ -107,13 +110,19 @@ public class RecipeService {
             String trimmedString = chatResponse.substring(startIndex, endIndex + 1);
             try {
                 RecipeResponse recipe = objectMapper.readValue(trimmedString, RecipeResponse.class);
+                NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
+                NutritionAndRecipe nutritionAndRecipe = new NutritionAndRecipe();
                 if (!recipesRepo.existsByName(recipe.getDish_name())) {
-                    saveRecipe(recipe);
+                    saveRecipe(recipe, nutrition);
                 }
-                System.out.println(nutritionService.getNutritionInfo(recipe));
                 // add to user history
+                // TODO: it returns a nutritionAndRecipe object even if the recipe exists in db. FIX IT!
+                // The whole method returns nutritionAndRecipe object.
                 userHistoryService.addToHistory(recipe.getDish_name());
-                return recipe;
+                nutritionAndRecipe.setRecipeResponse(recipe);
+                nutritionAndRecipe.setNutritionResponse(nutrition);
+                return nutritionAndRecipe;
+
             } catch (Exception e) {
                 throw new RuntimeException("Failed to parse AI recipe response", e);
             }
@@ -121,7 +130,7 @@ public class RecipeService {
         throw new RuntimeException("AI response did not contain valid JSON: " + chatResponse);
     }
 
-    public void saveRecipe(RecipeResponse recipeResponse) {
+    public void saveRecipe(RecipeResponse recipeResponse, NutritionResponse nutritionResponse) {
 
         Recipes recipe = new Recipes();
         recipe.setName(recipeResponse.getDish_name());
@@ -129,7 +138,7 @@ public class RecipeService {
         recipe.setInstructions(recipeResponse.getInstructions());
         recipe.setEstimatedTime(recipeResponse.getEstimated_time_minutes());
         recipe.setServings(recipeResponse.getServings());
-        recipe.setNutrition(recipeResponse.getNutrition());
+        recipe.setNutrition(nutritionService.saveNutritionInfo(nutritionResponse));
 
         recipesRepo.save(recipe);
     }
