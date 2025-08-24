@@ -1,5 +1,6 @@
 package alik.receiptmaker.model;
 
+import alik.receiptmaker.persistence.Nutrition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,5 @@ public class RecipeResponse {
     private List<String> instructions;
     private int estimated_time_minutes;
     private int servings;
+    private Nutrition nutrition;
 }

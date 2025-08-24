@@ -18,5 +18,8 @@ spring:
           model: gemini-2.0-flash
       api-key: ${GEMINI_API_KEY}
 
+spoonacular:
+    api-key: ${SPOONACULAR-API-KEY}
+
 jwt:
   secret-key: ${JAVA_COURSE_JWT_KEY}
