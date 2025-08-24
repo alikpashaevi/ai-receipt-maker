@@ -42,7 +42,6 @@ public class UserHistoryService {
                 }
             }
 
-            // TODO: ISN'T WORKING, THE TIMESTAMP ISN'T UPDATED
             if (userHistoryRepo.existsByUserAndRecipe(user, recipeToAdd)) {
                 UserHistory existingEntry = userHistoryRepo.findByUserAndRecipe(user, recipeToAdd);
                 if (existingEntry != null) {
@@ -57,7 +56,6 @@ public class UserHistoryService {
             userHistory.setRecipe(recipeToAdd);
             userHistory.setViewedAt(LocalDateTime.now());
 
-            // TODO: correct the error here
             userHistoryRepo.save(userHistory);
         } else {
             throw new RuntimeException("Recipe with this name does not exist");
