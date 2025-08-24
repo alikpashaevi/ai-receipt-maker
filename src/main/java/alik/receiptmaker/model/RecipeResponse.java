@@ -17,5 +17,4 @@ public class RecipeResponse {
     private List<String> instructions;
     private int estimated_time_minutes;
     private int servings;
-    private Nutrition nutrition;
 }
