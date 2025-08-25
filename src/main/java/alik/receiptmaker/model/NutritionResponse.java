@@ -1,5 +1,6 @@
 package alik.receiptmaker.model;
 
+import alik.receiptmaker.persistence.NutritionInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 

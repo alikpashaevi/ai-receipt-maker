@@ -1,12 +1,10 @@
 package alik.receiptmaker.service;
 
-import alik.receiptmaker.model.NutritionInfo;
 import alik.receiptmaker.model.NutritionResponse;
 import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.persistence.Nutrition;
 import alik.receiptmaker.persistence.NutritionRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -32,10 +30,8 @@ public class NutritionService {
 
     public Nutrition saveNutritionInfo(NutritionResponse nutritionResponse) {
         Nutrition nutrition = new Nutrition();
-        nutrition.setCalories(nutritionResponse.getCalories().getValue());
-        nutrition.setProtein(nutritionResponse.getProtein().getValue());
-        nutrition.setFat(nutritionResponse.getFat().getValue());
-        nutrition.setCarbs(nutritionResponse.getCarbs().getValue());
+        // TODO: figure it out
+        nutrition.setNutritionInfo();
         nutritionRepo.save(nutrition);
         return nutrition;
     }
