@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class RecipeResponse {
     private String dish_name;
-    private Set<String> ingredients;
+    private List<String> ingredients;
     private List<String> instructions;
     private int estimated_time_minutes;
     private int servings;
