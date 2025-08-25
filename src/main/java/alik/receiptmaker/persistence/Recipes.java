@@ -21,11 +21,11 @@ public class Recipes {
     @Column(name = "name")
     private String name;
 
-    @ElementCollection
+  @ElementCollection
     @CollectionTable(name = "recipe_ingredients", schema = "receipts",
             joinColumns = @JoinColumn(name = "recipe_id"))
     @Column(name = "ingredient")
-    private Set<String> ingredients;
+    private List<String> ingredients;
 
     @ElementCollection
     @CollectionTable(name = "recipe_instructions", schema = "receipts",
