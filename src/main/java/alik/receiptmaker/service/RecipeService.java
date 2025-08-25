@@ -59,11 +59,11 @@ public class RecipeService {
         if (!candidateRecipes.isEmpty()) {
             Recipes chosen = candidateRecipes.getFirst();
             NutritionAndRecipe result = new NutritionAndRecipe();
-
-
             result.setRecipeResponse(RecipeMapper.toResponse(chosen));
-            result.setNutritionResponse(NutritionMapper.toResponse(chosen.getNutrition()));
-            userHistoryService.addToHistory(chosen.getName());
+            if (chosen.getNutrition() != null) {
+                result.setNutritionResponse(NutritionMapper.toResponse(chosen.getNutrition()));
+                userHistoryService.addToHistory(chosen.getName());
+            }
             return result;
         } else {
             UserInfo userInfo = userInfoService.getUserInfoByUserId(user.getId());
@@ -75,7 +75,7 @@ public class RecipeService {
 
 
             String chatResponse = "{\n" +
-                    "  \"dish_name\": \"Chicken and Broccoli\",\n" +
+                    "  \"dish_name\": \"Chicken and these nuts\",\n" +
                     "  \"ingredients\": [\n" +
                     "    \"2 boneless, skinless chicken breasts, cut into 1-inch pieces\",\n" +
                     "    \"1 large head of broccoli, cut into florets\",\n" +
@@ -98,25 +98,25 @@ public class RecipeService {
                     "  \"servings\": 4\n" +
                     "}";
 
-    //        String chatResponse = chatModel.call(
-    //                "You are a helpful cooking assistant. \n" +
-    //                "The user will provide a list of ingredients. \n" +
-    //                "Suggest one dish they can cook, with step-by-step instructions. The dish name should be precise \n" +
-    //                "\n" +
-    //                "⚠️ IMPORTANT: Return the response in **valid JSON only** with this exact structure:\n" +
-    //                "{\n" +
-    //                "  \"dish_name\": \"string\",\n" +
-    //                "  \"ingredients\": [\"list\", \"of\", \"ingredients\"],\n" +
-    //                "  \"instructions\": [\"step 1\", \"step 2\", \"step 3\"],\n" +
-    //                "  \"estimated_time_minutes\": number,\n" +
-    //                "  \"servings\": number\n" +
-    //                "}\n" +
-    //                "\n" +
-    //                "User ingredients: " + ingredients + "\n" +
-    //                "User preferences: vegetarian = " + vegetarian + ", vegan = " + vegan + "\n" +
-    //                "User disliked ingredients: " + dislikedIngredients + ", allergies =" + allergies + "\n" +
-    //                "Try to not suggest the same dishes as last time. Last 5 dishes: " + lastFiveFoods + "\n"
-    //        );
+//            String chatResponse = chatModel.call(
+//                    "You are a helpful cooking assistant. \n" +
+//                    "The user will provide a list of ingredients. \n" +
+//                    "Suggest one dish they can cook, with step-by-step instructions. The dish name should be precise \n" +
+//                    "\n" +
+//                    "⚠️ IMPORTANT: Return the response in **valid JSON only** with this exact structure:\n" +
+//                    "{\n" +
+//                    "  \"dish_name\": \"string\",\n" +
+//                    "  \"ingredients\": [\"list\", \"of\", \"ingredients\"],\n" +
+//                    "  \"instructions\": [\"step 1\", \"step 2\", \"step 3\"],\n" +
+//                    "  \"estimated_time_minutes\": number,\n" +
+//                    "  \"servings\": number\n" +
+//                    "}\n" +
+//                    "\n" +
+//                    "User ingredients: " + ingredients + "\n" +
+//                    "User preferences: vegetarian = " + vegetarian + ", vegan = " + vegan + "\n" +
+//                    "User disliked ingredients: " + dislikedIngredients + ", allergies =" + allergies + "\n" +
+//                    "Try to not suggest the same dishes as last time. Last 5 dishes: " + lastFiveFoods + "\n"
+//            );
 
 
 
@@ -127,17 +127,18 @@ public class RecipeService {
                 String trimmedString = chatResponse.substring(startIndex, endIndex + 1);
                 try {
                     RecipeResponse recipe = objectMapper.readValue(trimmedString, RecipeResponse.class);
-                    NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
                     NutritionAndRecipe nutritionAndRecipe = new NutritionAndRecipe();
-                    if (!recipesRepo.existsByName(recipe.getDish_name())) {
-                        saveRecipe(recipe, nutrition);
-                    }
-                    // add to user history
-                    // TODO: it returns a nutritionAndRecipe object even if the recipe exists in db. FIX IT!
-                    // The whole method returns nutritionAndRecipe object.
-                    userHistoryService.addToHistory(recipe.getDish_name());
                     nutritionAndRecipe.setRecipeResponse(recipe);
-                    nutritionAndRecipe.setNutritionResponse(nutrition);
+                    if (!recipesRepo.existsByName(recipe.getDish_name())) {
+                        saveRecipe(nutritionAndRecipe);
+                    }
+                    userHistoryService.addToHistory(recipe.getDish_name());
+                    if (nutritionService.getNutritionInfo(recipe) != null) {
+                        NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
+
+                        nutritionAndRecipe.setNutritionResponse(nutrition);
+
+                    }
                     return nutritionAndRecipe;
 
                 } catch (Exception e) {
@@ -151,15 +152,17 @@ public class RecipeService {
         throw new RuntimeException("AI response did not contain valid JSON");
     }
 
-    public void saveRecipe(RecipeResponse recipeResponse, NutritionResponse nutritionResponse) {
+    public void saveRecipe(NutritionAndRecipe nutritionAndRecipe) {
 
         Recipes recipe = new Recipes();
-        recipe.setName(recipeResponse.getDish_name());
-        recipe.setIngredients(recipeResponse.getIngredients());
-        recipe.setInstructions(recipeResponse.getInstructions());
-        recipe.setEstimatedTime(recipeResponse.getEstimated_time_minutes());
-        recipe.setServings(recipeResponse.getServings());
-        recipe.setNutrition(nutritionService.saveNutritionInfo(nutritionResponse));
+        recipe.setName(nutritionAndRecipe.getRecipeResponse().getDish_name());
+        recipe.setIngredients(nutritionAndRecipe.getRecipeResponse().getIngredients());
+        recipe.setInstructions(nutritionAndRecipe.getRecipeResponse().getInstructions());
+        recipe.setEstimatedTime(nutritionAndRecipe.getRecipeResponse().getEstimated_time_minutes());
+        recipe.setServings(nutritionAndRecipe.getRecipeResponse().getServings());
+        if (nutritionAndRecipe.getNutritionResponse() != null) {
+            recipe.setNutrition(nutritionService.saveNutritionInfo(nutritionAndRecipe.getNutritionResponse()));
+        }
 
         recipesRepo.save(recipe);
     }
@@ -168,18 +171,4 @@ public class RecipeService {
         return recipesRepo.findAll();
     }
 
-    public Optional<Recipes> findByDishName(String name) {
-        return recipesRepo.findByDishName(name);
-    }
-
-//    public NutritionAndRecipe findByIngredients(List<String> ingredients, List<String> lastFiveFoods) {
-//        List<Recipes> recipes = recipesRepo.findByAllIngredients(ingredients, ingredients.size());
-//        for (int i = 0; i < lastFiveFoods.size(); i++) {
-//            if(recipes.get(i).getName().equals(lastFiveFoods.get(i))) {
-//
-//            }
-//        }
-
-
-//    }
 }
