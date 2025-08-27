@@ -1,5 +1,6 @@
 package alik.receiptmaker.user.persistence;
 
+import alik.receiptmaker.constants.AuthProvider;
 import alik.receiptmaker.persistence.Recipes;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,8 +25,19 @@ public class AppUser {
     @Column
     private String username;
 
+
+    @Column(name = "email")
+    private String email;
+
     @Column
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private AuthProvider provider;
+
+    @Column
+    private String providerId;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -50,6 +62,7 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(name = "recipe_id")
     )
     private List<Recipes> history = new ArrayList<>();
+
 
     @Override
     public String toString() {
