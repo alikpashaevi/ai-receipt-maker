@@ -1,7 +1,7 @@
 package alik.receiptmaker.security;
 
 
-import alik.receiptmaker.user.persistence.CustomOAuth2UserService;
+import alik.receiptmaker.user.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

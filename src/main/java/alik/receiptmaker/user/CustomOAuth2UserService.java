@@ -1,11 +1,9 @@
-package alik.receiptmaker.user.persistence;
+package alik.receiptmaker.user;
 
 
 import alik.receiptmaker.user.persistence.AppUser;
 import alik.receiptmaker.user.persistence.AppUserRepo;
-import alik.receiptmaker.user.RoleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
