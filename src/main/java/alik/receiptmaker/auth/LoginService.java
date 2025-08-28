@@ -1,5 +1,6 @@
 package alik.receiptmaker.auth;
 
+import alik.receiptmaker.error.InvalidLoginException;
 import alik.receiptmaker.user.UserService;
 import alik.receiptmaker.user.persistence.AppUser;
 import alik.receiptmaker.user.persistence.Role;
@@ -30,7 +31,7 @@ public class LoginService {
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             return generateLoginResponse(user);
         }
-        throw new RuntimeException("Invalid username or password");
+        throw new InvalidLoginException("Invalid username or password");
     }
 
     private LoginResponse generateLoginResponse(AppUser user) {
@@ -48,7 +49,7 @@ public class LoginService {
 
             return new LoginResponse(signedJWT.serialize());
         } catch (Exception e) {
-            throw new RuntimeException("Error generating JWT token", e);
+            throw new InvalidLoginException("Error generating JWT token", e);
         }
     }
 
