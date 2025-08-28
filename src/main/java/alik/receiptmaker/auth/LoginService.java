@@ -49,7 +49,7 @@ public class LoginService {
 
             return new LoginResponse(signedJWT.serialize());
         } catch (Exception e) {
-            throw new InvalidLoginException("Error generating JWT token", e);
+            throw new InvalidLoginException("Error generating JWT token");
         }
     }
 

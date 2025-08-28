@@ -1,0 +1,2 @@
+ALTER TABLE receipts.app_user
+    ALTER COLUMN PASSWORD DROP NOT NULL;

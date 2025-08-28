@@ -17,9 +17,18 @@ spring:
         options:
           model: gemini-2.0-flash
       api-key: ${GEMINI_API_KEY}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
 spoonacular:
-    api-key: ${SPOONACULAR-API-KEY}
+  api-key: ${SPOONACULAR-API-KEY}
 
 jwt:
   secret-key: ${JAVA_COURSE_JWT_KEY}

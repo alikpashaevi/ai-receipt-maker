@@ -15,3 +15,5 @@ databaseChangeLog:
         file: db/changelog/scripts/07-ADD-NUTRITION-ID-TO-RECIPES-TABLE.sql
   - include:
       file: db/changelog/scripts/08-CREATE-SEQUENCE-FOR-HISTORY-TABLE.sql
+  - include:
+      file: db/changelog/scripts/09-ALTER-USER-PASSWORD-COLUMN.sql
