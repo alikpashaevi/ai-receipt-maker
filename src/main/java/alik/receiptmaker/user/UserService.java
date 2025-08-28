@@ -62,6 +62,31 @@ public class UserService {
         appUserRepo.save(user);
     }
 
+    public void changePassword(String oldPassword, String newPassword) {
+        String username = GetUsername.getUsernameFromToken();
+        AppUser user = getUser(username);
+
+        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            appUserRepo.save(user);
+        } else {
+            throw new RuntimeException("Old password is incorrect");
+        }
+    }
+
+    public void changeUsername(String newUsername) {
+        String username = GetUsername.getUsernameFromToken();
+        AppUser user = getUser(username);
+
+        if (appUserRepo.existsByUsername(newUsername)) {
+            throw new RuntimeException("User with this username already exists");
+        }
+
+        user.setUsername(newUsername);
+        appUserRepo.save(user);
+    }
+
+
 //    public void addToHistory(RecipeResponse recipe) {
 //        String username = GetUsername.getUsernameFromToken();
 //        String dishName = recipe.getDish_name();
