@@ -24,13 +24,13 @@ public class UserController {
 //    }
 
     @PreAuthorize(USER_OR_ADMIN)
-    @PutMapping
+    @PutMapping("/password")
     public void changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
         userService.changePassword(oldPassword, newPassword);
     }
 
     @PreAuthorize(USER_OR_ADMIN)
-    @PutMapping
+    @PutMapping("/username")
     public void changeUsername(@RequestParam String newUsername) {
         userService.changeUsername(newUsername);
     }
