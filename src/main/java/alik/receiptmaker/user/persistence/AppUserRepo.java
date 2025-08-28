@@ -1,5 +1,6 @@
 package alik.receiptmaker.user.persistence;
 
+import alik.receiptmaker.constants.AuthProvider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,6 @@ public interface AppUserRepo extends JpaRepository<AppUser, Long> {
     boolean existsByUsername(String username);
 
     Optional<AppUser> findByEmail(String email);
+
+    Optional<AppUser> findByProviderAndProviderId(AuthProvider provider, String providerId);
 }
