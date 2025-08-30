@@ -1,6 +1,6 @@
 package alik.receiptmaker.auth;
 // src/test/java/alik/receiptmaker/auth/RegisterServiceTest.java
-import alik.receiptmaker.error.UsernameExistsException;
+import alik.receiptmaker.error.UserExistsException;
 import alik.receiptmaker.user.persistence.AppUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +54,7 @@ class RegisterServiceTest {
 
         when(appUserRepo.existsByUsername("existinguser")).thenReturn(true);
 
-        assertThrows(UsernameExistsException.class, () -> registerService.register(request));
+        assertThrows(UserExistsException.class, () -> registerService.register(request));
         verify(appUserRepo, never()).save(any(AppUser.class));
     }
 }
