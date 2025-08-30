@@ -1,5 +1,6 @@
 package alik.receiptmaker.auth;
 
+import alik.receiptmaker.error.UsernameExistsException;
 import alik.receiptmaker.user.RoleService;
 import alik.receiptmaker.user.persistence.AppUser;
 import alik.receiptmaker.user.persistence.AppUserRepo;
@@ -28,7 +29,7 @@ public class RegisterService {
         System.out.println(user.getRoles());
 
         if (appUserRepo.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("User with this username already exists");
+            throw new UsernameExistsException("User with this username already exists");
         }
 
         appUserRepo.save(user);

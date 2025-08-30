@@ -3,6 +3,7 @@ package alik.receiptmaker.user;
 import alik.receiptmaker.components.GetRecipeMethods;
 import alik.receiptmaker.components.GetUsername;
 import alik.receiptmaker.error.NotFoundException;
+import alik.receiptmaker.error.UsernameExistsException;
 import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.user.persistence.AppUser;
@@ -70,7 +71,7 @@ public class UserService {
         AppUser user = getUser(username);
 
         if (appUserRepo.existsByUsername(newUsername)) {
-            throw new RuntimeException("User with this username already exists");
+            throw new UsernameExistsException("User with this username already exists");
         }
 
         user.setUsername(newUsername);
