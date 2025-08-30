@@ -15,6 +15,9 @@ public class RegisterRequest {
     @Size(min = 2, max = 30)
     private String username;
     @NotBlank
+    @Size(min = 2, max = 50)
+    private String email;
+    @NotBlank
     @Size(min = 8)
     private String password;
     private Set<Long> roleIds;
