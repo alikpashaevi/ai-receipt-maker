@@ -7,6 +7,9 @@ import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.user.persistence.AppUser;
 import alik.receiptmaker.user.persistence.AppUserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,23 +19,11 @@ public class UserService {
 
     private final AppUserRepo appUserRepo;
     private final PasswordEncoder passwordEncoder;
-//    private final RecipeService recipeService;
     private final GetRecipeMethods getRecipeMethods;
-    private final RoleService roleService;
 
-//    public void createUser(UserRequest request) {
-//        AppUser user = new AppUser();
-//        user.setUsername(request.getUsername());
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
-//
-//        user.setRoles(roleService.getRole(request.getRoleIds()));
-//
-//        if (appUserRepo.existsByUsername(user.getUsername())) {
-//            throw new RuntimeException("User with this username already exists");
-//        }
-//
-//        appUserRepo.save(user);
-//    }
+    public Page<AppUser> getUsers(int page, int pageSize) {
+        return appUserRepo.findAll(PageRequest.of(page, pageSize));
+    }
 
     public AppUser getUser(String username) {
         return appUserRepo.findByUsername(username)
@@ -61,24 +52,28 @@ public class UserService {
         appUserRepo.save(user);
     }
 
-//    public void addToHistory(RecipeResponse recipe) {
-//        String username = GetUsername.getUsernameFromToken();
-//        String dishName = recipe.getDish_name();
-//
-//        if (getRecipeMethods.existsByName(dishName)) {
-//            Recipes recipeToAdd = getRecipeMethods.getRecipeByName(dishName);
-//            AppUser user = getUser(username);
-//
-//            if (user.getHistory().contains(recipeToAdd)) {
-//                user.getHistory().remove(recipeToAdd);
-//            }
-//
-//            user.getHistory().add(recipeToAdd);
-//            appUserRepo.save(user);
-//        } else {
-//            System.out.println("Recipe with name " + dishName + " does not exist in the database.");
-//        }
-//    }
+    public void changePassword(String oldPassword, String newPassword) {
+        String username = GetUsername.getUsernameFromToken();
+        AppUser user = getUser(username);
 
+        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            appUserRepo.save(user);
+        } else {
+            throw new RuntimeException("Old password is incorrect");
+        }
+    }
+
+    public void changeUsername(String newUsername) {
+        String username = GetUsername.getUsernameFromToken();
+        AppUser user = getUser(username);
+
+        if (appUserRepo.existsByUsername(newUsername)) {
+            throw new RuntimeException("User with this username already exists");
+        }
+
+        user.setUsername(newUsername);
+        appUserRepo.save(user);
+    }
 
 }
