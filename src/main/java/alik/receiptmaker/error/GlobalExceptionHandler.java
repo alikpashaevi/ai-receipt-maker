@@ -34,4 +34,10 @@ public class GlobalExceptionHandler {
                 .body(new ErrorDTO("invalid-login", exception.getMessage()));
     }
 
+    @ExceptionHandler(UsernameExistsException.class)
+    public ResponseEntity<ErrorDTO> handleUsernameExistsException(UsernameExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorDTO("username-exists", exception.getMessage()));
+    }
+
 }
