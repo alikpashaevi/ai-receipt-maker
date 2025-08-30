@@ -21,7 +21,6 @@ public class RegisterService {
     private final AppUserRepo appUserRepo;
     private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
-    private final EmailVerificationService emailVerificationService;
 
     public void register(RegisterRequest request) {
         AppUser user = new AppUser();

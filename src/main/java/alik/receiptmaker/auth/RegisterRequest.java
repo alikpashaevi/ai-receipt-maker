@@ -5,11 +5,13 @@ import jakarta.validation.constraints.Size;
 import liquibase.change.DatabaseChangeNote;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RegisterRequest {
     @NotBlank
     @Size(min = 2, max = 30)
