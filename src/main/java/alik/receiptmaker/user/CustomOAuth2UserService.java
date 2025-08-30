@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    // Make these fields final so Lombok injects them
     private final AppUserRepo userRepository;
     private final RoleService roleService;
 
@@ -29,22 +28,21 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        String registrationId = userRequest.getClientRegistration().getRegistrationId(); // "google"
-        AuthProvider provider = AuthProvider.valueOf(registrationId.toUpperCase()); // Convert to enum safely
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        AuthProvider provider = AuthProvider.valueOf(registrationId.toUpperCase());
         String providerId = (String) attributes.get("sub");
+        String name = (String) attributes.get("name");
         String email = (String) attributes.get("email");
 
         AppUser user = userRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseGet(() -> {
-                    // User not found by provider id, try to find by email
                     return userRepository.findByEmail(email).orElseGet(() -> {
-                        // Brand new user
                         AppUser newUser = new AppUser();
-                        newUser.setUsername(email); // Use email as username
+                        newUser.setUsername(name+providerId);
                         newUser.setEmail(email);
                         newUser.setProvider(provider);
                         newUser.setProviderId(providerId);
-                        newUser.setRoles(roleService.getRole(2L)); // e.g., 2L = ROLE_USER
+                        newUser.setRoles(roleService.getRole(2L));
                         return userRepository.save(newUser);
                     });
                 });
@@ -56,12 +54,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             user = userRepository.save(user);
         }
 
-        // Create a collection of authorities from the user's roles
         Collection<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName())) // Assuming role has a getName() method that returns "ROLE_USER"
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
-        // Return a custom OAuth2User object that includes the AppUser ID!
         return new CustomOAuth2User(user, attributes, authorities);
     }
 }

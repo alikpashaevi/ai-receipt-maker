@@ -23,8 +23,6 @@ public class RegisterService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-
-
         user.setRoles(roleService.getRole(2L));
 
         System.out.println(user.getRoles());
