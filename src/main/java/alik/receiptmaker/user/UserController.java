@@ -1,7 +1,5 @@
 package alik.receiptmaker.user;
 
-import alik.receiptmaker.user.model.UserRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +14,25 @@ public class UserController {
 
     private final UserService userService;
 
-//    @PreAuthorize(ADMIN)
-//    @PostMapping
-//    public void createUser(@RequestBody @Valid UserRequest request) {
-//        userService.createUser(request);
-//    }
+    @PreAuthorize(ADMIN)
+    @GetMapping("/users")
+    public Object getUsers(@RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "10") int pageSize) {
+        return userService.getUsers(page, pageSize);
+    }
+
+    @PreAuthorize(USER_OR_ADMIN)
+    @PutMapping("/password")
+    public void changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
+        userService.changePassword(oldPassword, newPassword);
+    }
+
+    @PreAuthorize(USER_OR_ADMIN)
+    @PutMapping("/username")
+    public void changeUsername(@RequestParam String newUsername) {
+        userService.changeUsername(newUsername);
+    }
+
 
     @PreAuthorize(USER_OR_ADMIN)
     @PostMapping("/favorites/{id}")
@@ -33,5 +45,6 @@ public class UserController {
     public void removeFromFavorites(@PathVariable Long id) {
         userService.removeFromFavorites(id);
     }
+
 
 }
