@@ -1,6 +1,7 @@
 package alik.receiptmaker.auth;
 
-import alik.receiptmaker.error.UsernameExistsException;
+import alik.receiptmaker.constants.AuthProvider;
+import alik.receiptmaker.error.UserExistsException;
 import alik.receiptmaker.service.EmailVerificationService;
 import alik.receiptmaker.user.RoleService;
 import alik.receiptmaker.user.persistence.AppUser;
@@ -26,14 +27,15 @@ public class RegisterService {
         AppUser user = new AppUser();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        if(appUserRepo.existsByEmail(request.getEmail())) {
+            throw new UserExistsException("User with this email already exists");
+        }
         user.setEmail(request.getEmail());
-
+        user.setProvider(AuthProvider.LOCAL);
         user.setRoles(roleService.getRole(2L));
 
-        System.out.println(user.getRoles());
-
         if (appUserRepo.existsByUsername(user.getUsername())) {
-            throw new UsernameExistsException("User with this username already exists");
+            throw new UserExistsException("User with this username already exists");
         }
 
         appUserRepo.save(user);
