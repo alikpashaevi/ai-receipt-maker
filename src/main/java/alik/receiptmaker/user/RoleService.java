@@ -1,5 +1,6 @@
 package alik.receiptmaker.user;
 
+import alik.receiptmaker.error.NotFoundException;
 import alik.receiptmaker.user.persistence.Role;
 import alik.receiptmaker.user.persistence.RoleRepo;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class RoleService {
 
     public Set<Role> getRole(Long id) {
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepo.findById(id).orElseThrow(() -> new RuntimeException("Role not found")));
+        roles.add(roleRepo.findById(id).orElseThrow(() -> new NotFoundException("Role not found")));
         return roles;
     }
 
