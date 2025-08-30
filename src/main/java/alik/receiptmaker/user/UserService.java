@@ -2,6 +2,7 @@ package alik.receiptmaker.user;
 
 import alik.receiptmaker.components.GetRecipeMethods;
 import alik.receiptmaker.components.GetUsername;
+import alik.receiptmaker.error.NotFoundException;
 import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.user.persistence.AppUser;
@@ -27,7 +28,7 @@ public class UserService {
 
     public AppUser getUser(String username) {
         return appUserRepo.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public void addToFavorites(Long receiptId) {
