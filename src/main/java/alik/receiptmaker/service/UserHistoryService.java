@@ -2,6 +2,7 @@ package alik.receiptmaker.service;
 
 import alik.receiptmaker.components.GetRecipeMethods;
 import alik.receiptmaker.components.GetUsername;
+import alik.receiptmaker.model.UserHistoryDTO;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.persistence.UserHistory;
 import alik.receiptmaker.persistence.UserHistoryRepo;
@@ -23,10 +24,24 @@ public class UserHistoryService {
     private final UserService userService;
     private final GetRecipeMethods getRecipeMethods;
 
-    public List<UserHistory> getUserHistory() {
+    private UserHistoryDTO mapUserHistoryToDto(UserHistory userHistory) {
+        if (userHistory == null) {
+            return null;
+        }
+
+        return new UserHistoryDTO(
+                userHistory.getRecipe().getName(),
+                userHistory.getViewedAt()
+        );
+    }
+
+    public List<UserHistoryDTO> getUserHistory() {
         AppUser user = userService.getUser(GetUsername.getUsernameFromToken());
 
-        return userHistoryRepo.findTop5ByUserOrderByViewedAtDesc(user);
+        List<UserHistory> userHistory = userHistoryRepo.findTop5ByUserOrderByViewedAtDesc(user);
+        return userHistory.stream()
+                .map(this::mapUserHistoryToDto)
+                .toList();
     }
 
     @Transactional

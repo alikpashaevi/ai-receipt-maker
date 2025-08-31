@@ -1,5 +1,6 @@
 package alik.receiptmaker.controller;
 
+import alik.receiptmaker.model.UserHistoryDTO;
 import alik.receiptmaker.persistence.UserHistory;
 import alik.receiptmaker.service.UserHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class UserHistoryController {
     private final UserHistoryService userHistoryService;
 
     @GetMapping
-    public List<UserHistory> getUserHistory() {
+    public List<UserHistoryDTO> getUserHistory() {
         return userHistoryService.getUserHistory();
     }
 

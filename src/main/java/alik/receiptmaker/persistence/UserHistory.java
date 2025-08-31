@@ -1,6 +1,7 @@
 package alik.receiptmaker.persistence;
 
 import alik.receiptmaker.user.persistence.AppUser;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class UserHistory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private AppUser user;
 
     @ManyToOne(fetch = FetchType.LAZY)
