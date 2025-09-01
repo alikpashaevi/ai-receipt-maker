@@ -39,6 +39,8 @@ spring:
             enable: true
             required: true
 
+frontend:
+  url: ${FRONTEND_URL}
 
 spoonacular:
   api-key: ${SPOONACULAR-API-KEY}
