@@ -29,8 +29,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${DESIGN-SERVICE-EMAIL}
-    password: ${DESIGN-SERVICE-APP-PASSWORD}
+    username: ${DESIGN_SERVICE_EMAIL}
+    password: ${DESIGN_SERVICE_APP_PASSWORD}
     properties:
       mail:
         smtp:
@@ -43,7 +43,7 @@ frontend:
   url: ${FRONTEND_URL}
 
 spoonacular:
-  api-key: ${SPOONACULAR-API-KEY}
+  api-key: ${SPOONACULAR_API_KEY}
 
 jwt:
   secret-key: ${JAVA_COURSE_JWT_KEY}

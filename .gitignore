@@ -5,6 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+.env
+Dockerfile
+
 ### STS ###
 .apt_generated
 .classpath

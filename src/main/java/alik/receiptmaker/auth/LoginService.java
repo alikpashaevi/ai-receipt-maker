@@ -27,10 +27,14 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
 
     public LoginResponse login(LoginRequest request) {
-        AppUser user = userService.getUser(request.getUsername());
-        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return generateLoginResponse(user);
-        }
+        if(userService.getUser(request.getUsername()) == null) {
+            throw new InvalidLoginException("Invalid username or password");
+        } else {
+            AppUser user = userService.getUser(request.getUsername());
+            if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                return generateLoginResponse(user);
+            }
+        };
         throw new InvalidLoginException("Invalid username or password");
     }
 
