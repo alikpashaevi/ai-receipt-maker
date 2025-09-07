@@ -31,4 +31,8 @@ public class RecipeController {
         return recipeService.getRecipes();
     }
 
+    @GetMapping("/{id}")
+    public NutritionAndRecipe getRecipeById(@PathVariable long id) {
+        return recipeService.getRecipeResponseById(id);
+    }
 }

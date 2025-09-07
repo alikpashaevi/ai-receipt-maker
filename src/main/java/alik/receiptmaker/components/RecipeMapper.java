@@ -9,13 +9,18 @@ public class RecipeMapper {
         if (recipe == null) {
             return null;
         }
+        Long nutritionId = null;
+        if (recipe.getNutrition() != null) {
+            nutritionId = recipe.getNutrition().getId();
+        }
 
         return new RecipeResponse(
                 recipe.getName(),
                 recipe.getIngredients(),
                 recipe.getInstructions(),
                 recipe.getEstimatedTime(),
-                recipe.getServings()
+                recipe.getServings(),
+                nutritionId
         );
     }
 }

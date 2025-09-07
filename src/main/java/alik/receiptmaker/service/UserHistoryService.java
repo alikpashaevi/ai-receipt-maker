@@ -30,6 +30,7 @@ public class UserHistoryService {
         }
 
         return new UserHistoryDTO(
+                userHistory.getRecipe().getId(),
                 userHistory.getRecipe().getName(),
                 userHistory.getViewedAt()
         );

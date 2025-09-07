@@ -34,6 +34,8 @@ public class UserController {
         userService.changeUsername(newUsername);
     }
 
+
+
     @PreAuthorize(USER_OR_ADMIN)
     @PostMapping("/favorites/{id}")
     public ResponseEntity<String> addToFavorites(@PathVariable Long id) {

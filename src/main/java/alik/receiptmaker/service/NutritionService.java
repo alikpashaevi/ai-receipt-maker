@@ -1,5 +1,6 @@
 package alik.receiptmaker.service;
 
+import alik.receiptmaker.components.NutritionMapper;
 import alik.receiptmaker.model.NutritionInfo;
 import alik.receiptmaker.model.NutritionResponse;
 import alik.receiptmaker.model.RecipeResponse;
@@ -28,6 +29,13 @@ public class NutritionService {
                 .retrieve()
                 .bodyToMono(NutritionResponse.class)
                 .block();
+    }
+
+    public NutritionResponse getNutritionById(long id) {
+        return nutritionRepo.findById(id)
+                .map(NutritionMapper::toResponse)
+                .orElse(null);
+
     }
 
     public Nutrition saveNutritionInfo(NutritionResponse nutritionResponse) {
