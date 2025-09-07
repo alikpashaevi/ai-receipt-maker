@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -30,6 +32,23 @@ public class UserService {
     public AppUser getUser(String username) {
         return appUserRepo.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found"));
+    }
+
+    public Set<Recipes> getUserFavorites() {
+        String username = GetUsername.getUsernameFromToken();
+        System.out.println("Username from token: " + username);
+        AppUser user = getUser(username);
+        return user.getFavorites();
+    }
+
+    public Recipes getUserFavoriteById(Long id) {
+        String username = GetUsername.getUsernameFromToken();
+        System.out.println("Username from token: " + username);
+        AppUser user = getUser(username);
+        return user.getFavorites().stream()
+                .filter(recipe -> recipe.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Favorite recipe not found"));
     }
 
     public void addToFavorites(Long receiptId) {
