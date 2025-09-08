@@ -1,5 +1,6 @@
 package alik.receiptmaker.user;
 
+import alik.receiptmaker.model.UserFavoritesDTO;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.user.persistence.AppUser;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,8 @@ public class UserController {
 
     @PreAuthorize(USER_OR_ADMIN)
     @GetMapping("/favorites")
-    public ResponseEntity<Set<Recipes>> getUserFavorites() {
-        Set<Recipes> favorites = userService.getUserFavorites();
+    public ResponseEntity<Set<UserFavoritesDTO>> getUserFavorites() {
+        Set<UserFavoritesDTO> favorites = userService.getUserFavorites();
         return ResponseEntity.ok(favorites);
     }
 

@@ -5,6 +5,7 @@ import alik.receiptmaker.components.GetUsername;
 import alik.receiptmaker.error.NotFoundException;
 import alik.receiptmaker.error.UserExistsException;
 import alik.receiptmaker.model.RecipeResponse;
+import alik.receiptmaker.model.UserFavoritesDTO;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.user.persistence.AppUser;
 import alik.receiptmaker.user.persistence.AppUserRepo;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,17 @@ public class UserService {
     private final AppUserRepo appUserRepo;
     private final PasswordEncoder passwordEncoder;
     private final GetRecipeMethods getRecipeMethods;
+
+    private UserFavoritesDTO mapUserFavoritesDTO(Recipes recipe) {
+        if (recipe == null) {
+            return null;
+        }
+
+        return new UserFavoritesDTO(
+                recipe.getId(),
+                recipe.getName()
+        );
+    }
 
     public Page<AppUser> getUsers(int page, int pageSize) {
         return appUserRepo.findAll(PageRequest.of(page, pageSize));
@@ -34,11 +47,10 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
-    public Set<Recipes> getUserFavorites() {
+    public Set<UserFavoritesDTO> getUserFavorites() {
         String username = GetUsername.getUsernameFromToken();
-        System.out.println("Username from token: " + username);
         AppUser user = getUser(username);
-        return user.getFavorites();
+        return user.getFavorites().stream().map(this::mapUserFavoritesDTO).collect(Collectors.toSet());
     }
 
 //    public Recipes getUserFavoriteById(Long id) {
@@ -53,7 +65,6 @@ public class UserService {
 
     public void addToFavorites(Long receiptId) {
         String username = GetUsername.getUsernameFromToken();
-        System.out.println("Username from token: " + username);
         AppUser user = getUser(username);
         Recipes recipeToAdd = getRecipeMethods.getRecipeById(receiptId);
         if (recipeToAdd != null) {
@@ -64,7 +75,6 @@ public class UserService {
 
     public void removeFromFavorites(Long  receiptId) {
         String username = GetUsername.getUsernameFromToken();
-        System.out.println("Username from token: " + username);
         AppUser user = getUser(username);
         Recipes recipeToRemove = getRecipeMethods.getRecipeById(receiptId);
         if (recipeToRemove != null) {
