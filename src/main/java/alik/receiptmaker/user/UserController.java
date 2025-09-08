@@ -34,12 +34,12 @@ public class UserController {
         return ResponseEntity.ok(favorites);
     }
 
-    @PreAuthorize(USER_OR_ADMIN)
-    @GetMapping("/favorites/{id}")
-    public ResponseEntity<Recipes> getFavoriteById(@PathVariable Long id) {
-        Recipes favorite = userService.getUserFavoriteById(id);
-        return ResponseEntity.ok(favorite);
-    }
+//    @PreAuthorize(USER_OR_ADMIN)
+//    @GetMapping("/favorites/{id}")
+//    public ResponseEntity<Recipes> getFavoriteById(@PathVariable Long id) {
+//        Recipes favorite = userService.getUserFavoriteById(id);
+//        return ResponseEntity.ok(favorite);
+//    }
 
     @PreAuthorize(USER_OR_ADMIN)
     @PutMapping("/password")

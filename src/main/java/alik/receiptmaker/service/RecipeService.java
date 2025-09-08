@@ -57,14 +57,18 @@ public class RecipeService {
                 .filter(r -> !lastFiveFoods.contains(r.getName()))
                 .toList();
 
+        System.out.println("candidateRecipes = " + candidateRecipes);
+
         if (!candidateRecipes.isEmpty()) {
             Recipes chosen = candidateRecipes.getFirst();
             NutritionAndRecipe result = new NutritionAndRecipe();
             result.setRecipeResponse(RecipeMapper.toResponse(chosen));
+            System.out.println("here");
             if (chosen.getNutrition() != null) {
                 result.setNutritionResponse(NutritionMapper.toResponse(chosen.getNutrition()));
                 userHistoryService.addToHistory(chosen.getName());
             }
+            System.out.println("here 2");
             return result;
         } else {
             UserInfo userInfo = userInfoService.getUserInfoByUserId(user.getId());
@@ -130,7 +134,8 @@ public class RecipeService {
                     RecipeResponse recipe = objectMapper.readValue(trimmedString, RecipeResponse.class);
                     NutritionAndRecipe nutritionAndRecipe = new NutritionAndRecipe();
                     nutritionAndRecipe.setRecipeResponse(recipe);
-                    if (nutritionService.getNutritionById(recipe.getNutritionId()) == null) {
+                    System.out.println("nutritionId = " + recipe.getNutritionId());
+                    if (recipe.getNutritionId() == null || nutritionService.getNutritionById(recipe.getNutritionId()) == null) {
                         NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
                         System.out.println("nutrition = " + nutrition);
 
