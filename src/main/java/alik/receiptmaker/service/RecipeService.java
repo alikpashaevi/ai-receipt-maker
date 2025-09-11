@@ -80,7 +80,7 @@ public class RecipeService {
 
 
             String chatResponse = "{\n" +
-                    "  \"dish_name\": \"Chicken Fried Steak\",\n" +
+                    "  \"dish_name\": \"Rice\",\n" +
                     "  \"ingredients\": [\n" +
                     "    \"2 boneless, skinless chicken breasts, cut into 1-inch pieces\",\n" +
                     "    \"1 large head of broccoli, cut into florets\",\n" +
@@ -134,17 +134,27 @@ public class RecipeService {
                     RecipeResponse recipe = objectMapper.readValue(trimmedString, RecipeResponse.class);
                     NutritionAndRecipe nutritionAndRecipe = new NutritionAndRecipe();
                     nutritionAndRecipe.setRecipeResponse(recipe);
-                    System.out.println("nutritionId = " + recipe.getNutritionId());
-                    if (recipe.getNutritionId() == null || nutritionService.getNutritionById(recipe.getNutritionId()) == null) {
-                        NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
-                        System.out.println("nutrition = " + nutrition);
-
-                        nutritionAndRecipe.setNutritionResponse(nutrition);
-                        if (!recipesRepo.existsByName(recipe.getDish_name())) {
-                            saveRecipe(nutritionAndRecipe);
-                        }
-//                        if (recipesRepo.findByDishName(recipe.getNu))
+                    if (recipesRepo.existsByName(recipe.getDish_name())) {
+                        Recipes existingRecipe = recipesRepo.findByDishName(recipe.getDish_name()).get();
+                        recipe.setRecipeId(existingRecipe.getId());
+                        recipe.setNutritionId(existingRecipe.getNutrition().getId());
                         userHistoryService.addToHistory(recipe.getDish_name());
+                        if (recipe.getNutritionId() != null) {
+                            nutritionAndRecipe.setNutritionResponse(nutritionService.getNutritionById(recipe.getNutritionId()));
+                        }
+                    } else {
+                        if (recipe.getNutritionId() == null || nutritionService.getNutritionById(recipe.getNutritionId()) == null) {
+                            NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
+                            System.out.println("nutrition = " + nutrition);
+
+                            nutritionAndRecipe.setNutritionResponse(nutrition);
+                            saveRecipe(nutritionAndRecipe);
+                                // set the recipeId after saving
+                            nutritionAndRecipe.getRecipeResponse().setRecipeId(recipesRepo.findByDishName(recipe.getDish_name()).get().getId());
+                            nutritionAndRecipe.getRecipeResponse().setNutritionId(recipesRepo.findByDishName(recipe.getDish_name()).get().getNutrition().getId());
+    //                        if (recipesRepo.findByDishName(recipe.getNu))
+                            userHistoryService.addToHistory(recipe.getDish_name());
+                        }
                     }
                     return nutritionAndRecipe;
 
@@ -160,7 +170,6 @@ public class RecipeService {
     }
 
     public void saveRecipe(NutritionAndRecipe nutritionAndRecipe) {
-
         Recipes recipe = new Recipes();
         recipe.setName(nutritionAndRecipe.getRecipeResponse().getDish_name());
         recipe.setIngredients(nutritionAndRecipe.getRecipeResponse().getIngredients());

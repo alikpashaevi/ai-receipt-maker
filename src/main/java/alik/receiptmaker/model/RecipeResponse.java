@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeResponse {
+    private Long recipeId;
     private String dish_name;
     private List<String> ingredients;
     private List<String> instructions;

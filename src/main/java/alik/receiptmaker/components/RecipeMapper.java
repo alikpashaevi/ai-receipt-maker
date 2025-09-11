@@ -15,6 +15,7 @@ public class RecipeMapper {
         }
 
         return new RecipeResponse(
+                recipe.getId(),
                 recipe.getName(),
                 recipe.getIngredients(),
                 recipe.getInstructions(),
