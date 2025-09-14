@@ -40,4 +40,10 @@ public class GlobalExceptionHandler {
                 .body(new ErrorDTO("username-exists", exception.getMessage()));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorDTO> handleUnauthorizedException(UnauthorizedException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorDTO("unauthorized", exception.getMessage()));
+    }
+
 }

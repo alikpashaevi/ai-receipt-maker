@@ -7,6 +7,7 @@ import alik.receiptmaker.error.UserExistsException;
 import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.model.UserFavoritesDTO;
 import alik.receiptmaker.persistence.Recipes;
+import alik.receiptmaker.user.model.AppUserDTO;
 import alik.receiptmaker.user.persistence.AppUser;
 import alik.receiptmaker.user.persistence.AppUserRepo;
 import lombok.RequiredArgsConstructor;
@@ -105,6 +106,18 @@ public class UserService {
 
         user.setUsername(newUsername);
         appUserRepo.save(user);
+    }
+
+    public AppUserDTO getProfile() {
+        String username = GetUsername.getUsernameFromToken();
+        AppUser user = getUser(username);
+
+        AppUserDTO userDTO = new AppUserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setRoles(user.getRoles());
+        return userDTO;
     }
 
 }

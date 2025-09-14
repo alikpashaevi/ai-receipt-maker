@@ -2,6 +2,7 @@ package alik.receiptmaker.user;
 
 import alik.receiptmaker.model.UserFavoritesDTO;
 import alik.receiptmaker.persistence.Recipes;
+import alik.receiptmaker.user.model.AppUserDTO;
 import alik.receiptmaker.user.persistence.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -68,6 +69,12 @@ public class UserController {
     public ResponseEntity<String> removeFromFavorites(@PathVariable Long id) {
         userService.removeFromFavorites(id);
         return ResponseEntity.ok("Recipe removed from favorites");
+    }
+
+    @PreAuthorize(USER_OR_ADMIN)
+    @GetMapping("/profile")
+    public AppUserDTO getUserProfile() {
+        return userService.getProfile();
     }
 
 
