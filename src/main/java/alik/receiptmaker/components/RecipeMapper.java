@@ -1,7 +1,10 @@
 package alik.receiptmaker.components;
 
 import alik.receiptmaker.model.RecipeResponse;
+import alik.receiptmaker.persistence.NormalizedIngredients;
 import alik.receiptmaker.persistence.Recipes;
+
+import java.util.Set;
 
 public class RecipeMapper {
 
@@ -14,11 +17,14 @@ public class RecipeMapper {
             nutritionId = recipe.getNutrition().getId();
         }
 
+        Set<String> normalizedIngredients = IngredientsMapper.mapToIngredientNames(recipe.getNormalizedIngredients());
+
         return new RecipeResponse(
                 recipe.getId(),
                 recipe.getName(),
                 recipe.getIngredients(),
                 recipe.getInstructions(),
+                normalizedIngredients,
                 recipe.getEstimatedTime(),
                 recipe.getServings(),
                 nutritionId

@@ -1,20 +1,19 @@
 package alik.receiptmaker.service;
 
 import alik.receiptmaker.components.GetUsername;
+import alik.receiptmaker.components.IngredientsMapper;
 import alik.receiptmaker.components.NutritionMapper;
 import alik.receiptmaker.components.RecipeMapper;
 import alik.receiptmaker.error.NotFoundException;
 import alik.receiptmaker.model.NutritionAndRecipe;
 import alik.receiptmaker.model.NutritionResponse;
 import alik.receiptmaker.model.RecipeResponse;
-import alik.receiptmaker.persistence.Nutrition;
-import alik.receiptmaker.persistence.Recipes;
-import alik.receiptmaker.persistence.RecipesRepo;
-import alik.receiptmaker.persistence.UserInfo;
+import alik.receiptmaker.persistence.*;
 import alik.receiptmaker.user.UserService;
 import alik.receiptmaker.user.persistence.AppUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Normalized;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +32,7 @@ public class RecipeService {
     private final UserHistoryService userHistoryService;
     private final UserInfoService userInfoService;
     private final NutritionService nutritionService;
+    private final NormalizedIngredientService normalizedIngredientService;
 
     public NutritionAndRecipe getResponse(List<String> ingredients) {
 
@@ -78,7 +78,6 @@ public class RecipeService {
             Set<String> allergies = userInfo.getAllergies();
             Set<String> dislikedIngredients = userInfo.getDislikedIngredients();
 
-
             String chatResponse = "{\n" +
                     "  \"dish_name\": \"Rice\",\n" +
                     "  \"ingredients\": [\n" +
@@ -99,30 +98,36 @@ public class RecipeService {
                     "    \"Return the cooked chicken to the skillet. Pour the soy sauce mixture over the chicken and broccoli. Cook, stirring constantly, for 1-2 minutes until the sauce thickens and coats everything.\",\n" +
                     "    \"Serve immediately over cooked rice.\"\n" +
                     "  ],\n" +
+                    "  \"normalized_ingredients\": [\n" +
+                    "    \"chicken breasts\",\n" +
+                    "    \"broccoli\"\n" +
+                    "  ],\n" +
                     "  \"estimated_time_minutes\": 25,\n" +
                     "  \"servings\": 4\n" +
                     "}";
 
 //            String chatResponse = chatModel.call(
-//                    "You are a helpful cooking assistant. \n" +
-//                    "The user will provide a list of ingredients. \n" +
-//                    "Suggest one dish they can cook, with step-by-step instructions. The dish name should be precise \n" +
-//                    "\n" +
-//                    "⚠️ IMPORTANT: Return the response in **valid JSON only** with this exact structure:\n" +
-//                    "{\n" +
-//                    "  \"dish_name\": \"string\",\n" +
-//                    "  \"ingredients\": [\"list\", \"of\", \"ingredients\"],\n" +
-//                    "  \"instructions\": [\"step 1\", \"step 2\", \"step 3\"],\n" +
-//                    "  \"estimated_time_minutes\": number,\n" +
-//                    "  \"servings\": number\n" +
-//                    "}\n" +
-//                    "\n" +
-//                    "User ingredients: " + ingredients + "\n" +
-//                    "User preferences: vegetarian = " + vegetarian + ", vegan = " + vegan + "\n" +
-//                    "User disliked ingredients: " + dislikedIngredients + ", allergies =" + allergies + "\n" +
-//                    "Try to not suggest the same dishes as last time. Last 5 dishes: " + lastFiveFoods + "\n"
+//                    "You are a helpful cooking assistant. Your task is to suggest a dish based on the user's ingredients and preferences. \n" +
+//                            "\n" +
+//                            "⚠️ IMPORTANT: Return the response in **valid JSON only** with this exact structure:\n" +
+//                            "{\n" +
+//                            "  \"dish_name\": \"string\",\n" +
+//                            "  \"ingredients\": [\"1 tbsp olive oil\", \"2 cloves garlic, minced\", \"1 tsp black pepper\"],\n" +
+//                            "  \"instructions\": [\"step 1\", \"step 2\", \"step 3\"],\n" +
+//                            "  \"normalized_ingredients\": [\"garlic\", \"pepper\"],\n" +
+//                            "  \"estimated_time_minutes\": number,\n" +
+//                            "  \"servings\": number\n" +
+//                            "}\n" +
+//                            "\n" +
+//                            "CRITICAL FORMATTING RULES:\n" +
+//                            "1. **normalized_user_ingredients**: This must be a simple list of the base ingredient names provided by the user. Normalize them: remove all quantities, measurements, and preparation notes (e.g., '2 cloves of minced garlic' -> 'garlic').\n" +
+//                            "2. **ingredients**: This is the list of ingredients *for the recipe you are suggesting*, including the required quantities and preparations.\n" +
+//                            "\n" +
+//                            "User ingredients: " + ingredients + "\n" +
+//                            "User preferences: vegetarian = " + vegetarian + ", vegan = " + vegan + "\n" +
+//                            "User disliked ingredients: " + dislikedIngredients + ", allergies =" + allergies + "\n" +
+//                            "Try to not suggest the same dishes as last time. Last 5 dishes: " + lastFiveFoods + "\n"
 //            );
-
 
 
             int startIndex = chatResponse.indexOf('{');
@@ -174,6 +179,12 @@ public class RecipeService {
         recipe.setName(nutritionAndRecipe.getRecipeResponse().getDish_name());
         recipe.setIngredients(nutritionAndRecipe.getRecipeResponse().getIngredients());
         recipe.setInstructions(nutritionAndRecipe.getRecipeResponse().getInstructions());
+        Set<NormalizedIngredients> normalizedIngredients =
+                normalizedIngredientService.saveNormalizedIngredients(
+                        nutritionAndRecipe.getRecipeResponse().getNormalized_ingredients()
+                );
+        recipe.setNormalizedIngredients(normalizedIngredients);
+        recipe.setNormalizedIngredients(normalizedIngredients);
         recipe.setEstimatedTime(nutritionAndRecipe.getRecipeResponse().getEstimated_time_minutes());
         recipe.setServings(nutritionAndRecipe.getRecipeResponse().getServings());
         if (nutritionAndRecipe.getNutritionResponse() != null) {

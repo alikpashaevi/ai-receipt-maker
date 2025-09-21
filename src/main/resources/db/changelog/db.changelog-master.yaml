@@ -19,3 +19,5 @@ databaseChangeLog:
       file: db/changelog/scripts/09-ALTER-USER-TABLE-TO-ADD-EMAIL-AND-PROVIDER.sql
   - include:
       file: db/changelog/scripts/10-CREATE-EMAIL-VERIFICATION-TABLE.sql
+  - include:
+      file: db/changelog/scripts/11-CREATE-NORMALIZED-INGREDIENTS-TABLE.sql

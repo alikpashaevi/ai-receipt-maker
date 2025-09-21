@@ -21,7 +21,7 @@ public class Recipes {
     @Column(name = "name")
     private String name;
 
-  @ElementCollection
+    @ElementCollection
     @CollectionTable(name = "recipe_ingredients", schema = "receipts",
             joinColumns = @JoinColumn(name = "recipe_id"))
     @Column(name = "ingredient")
@@ -32,6 +32,14 @@ public class Recipes {
             joinColumns = @JoinColumn(name = "recipe_id"))
     @Column(name = "instruction")
     private List<String> instructions;
+
+    @ManyToMany
+    @JoinTable(
+        name = "recipe_normalized_ingredients",
+        joinColumns = @JoinColumn(name = "recipe_id"),
+        inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    private Set<NormalizedIngredients> normalizedIngredients;
 
 
     @Column(name = "estimated_time")
