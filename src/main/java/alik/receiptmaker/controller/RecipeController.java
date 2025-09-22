@@ -5,6 +5,7 @@ import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.service.RecipeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,5 +35,12 @@ public class RecipeController {
     @GetMapping("/{id}")
     public NutritionAndRecipe getRecipeById(@PathVariable long id) {
         return recipeService.getRecipeResponseById(id);
+    }
+
+    @GetMapping("/search")
+    public Page<Recipes> searchRecipes(@RequestParam List<String> ingredients,
+                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int pageSize) {
+        return recipeService.getRecipesByIngredients(ingredients, page, pageSize);
     }
 }

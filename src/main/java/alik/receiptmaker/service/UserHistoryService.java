@@ -51,7 +51,7 @@ public class UserHistoryService {
             AppUser user = userService.getUser(GetUsername.getUsernameFromToken());
             Recipes recipeToAdd = getRecipeMethods.getRecipeByName(dishName);
 
-            if (userHistoryRepo.findAll().size() > 10) {
+            if (userHistoryRepo.findAll().size() > 5) {
                 UserHistory oldestEntry = userHistoryRepo.findTopByUserOrderByViewedAtAsc(user);
                 if (oldestEntry != null) {
                     userHistoryRepo.delete(oldestEntry);

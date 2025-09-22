@@ -15,8 +15,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Normalized;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -51,7 +54,8 @@ public class RecipeService {
         } else {
             lastFiveFoods = userPastFoods;
         }
-
+        System.out.println("lastFiveFoods = " + lastFiveFoods);
+        System.out.println("ingredients = " + ingredients);
         List<Recipes> candidateRecipes = recipesRepo.findByAllIngredients(ingredients)
                 .stream()
                 .filter(r -> !lastFiveFoods.contains(r.getName()))
@@ -66,8 +70,8 @@ public class RecipeService {
             System.out.println("here");
             if (chosen.getNutrition() != null) {
                 result.setNutritionResponse(NutritionMapper.toResponse(chosen.getNutrition()));
-                userHistoryService.addToHistory(chosen.getName());
             }
+            userHistoryService.addToHistory(chosen.getName());
             System.out.println("here 2");
             return result;
         } else {
@@ -212,6 +216,10 @@ public class RecipeService {
 
         nutritionAndRecipe.setRecipeResponse(recipe);
         return nutritionAndRecipe;
+    }
+
+    public Page<Recipes> getRecipesByIngredients(List<String> ingredients, int page, int pageSize) {
+        return recipesRepo.findByAllIngredientsPage(ingredients, PageRequest.of(page, pageSize));
     }
 
 }
