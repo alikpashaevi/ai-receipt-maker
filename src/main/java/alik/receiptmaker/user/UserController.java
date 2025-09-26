@@ -1,5 +1,6 @@
 package alik.receiptmaker.user;
 
+import alik.receiptmaker.auth.LoginResponse;
 import alik.receiptmaker.model.UserFavoritesDTO;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.user.model.AppUserDTO;
@@ -51,8 +52,8 @@ public class UserController {
 
     @PreAuthorize(USER_OR_ADMIN)
     @PutMapping("/username")
-    public void changeUsername(@RequestParam String newUsername) {
-        userService.changeUsername(newUsername);
+    public LoginResponse changeUsername(@RequestParam String newUsername) {
+        return userService.changeUsername(newUsername);
     }
 
 

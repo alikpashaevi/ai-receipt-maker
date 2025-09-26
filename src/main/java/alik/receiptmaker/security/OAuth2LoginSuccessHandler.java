@@ -27,8 +27,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         AppUser user = oauth2User.getAppUser();
 
         var loginResponse = loginService.generateLoginResponse(user);
+        String token = loginResponse.getAccessToken();
 
-        response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(loginResponse));
+//        response.setContentType("application/json");
+//        response.getWriter().write(objectMapper.writeValueAsString(loginResponse));
+        response.sendRedirect("http://localhost:3000/oauth2/success?token=" + token);
     }
 }

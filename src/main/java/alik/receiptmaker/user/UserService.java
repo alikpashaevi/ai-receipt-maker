@@ -1,5 +1,6 @@
 package alik.receiptmaker.user;
 
+import alik.receiptmaker.auth.LoginRequest;
 import alik.receiptmaker.components.GetRecipeMethods;
 import alik.receiptmaker.components.GetUsername;
 import alik.receiptmaker.error.NotFoundException;
