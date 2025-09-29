@@ -1,11 +1,11 @@
 package alik.receiptmaker.user;
 
-import alik.receiptmaker.auth.LoginRequest;
+import alik.receiptmaker.auth.JwtService;
+import alik.receiptmaker.auth.LoginResponse;
 import alik.receiptmaker.components.GetRecipeMethods;
 import alik.receiptmaker.components.GetUsername;
 import alik.receiptmaker.error.NotFoundException;
 import alik.receiptmaker.error.UserExistsException;
-import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.model.UserFavoritesDTO;
 import alik.receiptmaker.persistence.Recipes;
 import alik.receiptmaker.user.model.AppUserDTO;
@@ -14,7 +14,6 @@ import alik.receiptmaker.user.persistence.AppUserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +27,7 @@ public class UserService {
     private final AppUserRepo appUserRepo;
     private final PasswordEncoder passwordEncoder;
     private final GetRecipeMethods getRecipeMethods;
+    private final JwtService jwtService;
 
     private UserFavoritesDTO mapUserFavoritesDTO(Recipes recipe) {
         if (recipe == null) {
@@ -42,6 +42,11 @@ public class UserService {
 
     public Page<AppUser> getUsers(int page, int pageSize) {
         return appUserRepo.findAll(PageRequest.of(page, pageSize));
+    }
+
+    public AppUser getUserForLogin(String username) {
+        return appUserRepo.findByUsername(username)
+                .orElse(null);
     }
 
     public AppUser getUser(String username) {
@@ -97,7 +102,7 @@ public class UserService {
         }
     }
 
-    public void changeUsername(String newUsername) {
+    public LoginResponse changeUsername(String newUsername) {
         String username = GetUsername.getUsernameFromToken();
         AppUser user = getUser(username);
 
@@ -107,6 +112,8 @@ public class UserService {
 
         user.setUsername(newUsername);
         appUserRepo.save(user);
+
+        return jwtService.generateLoginResponse(user);
     }
 
     public AppUserDTO getProfile() {

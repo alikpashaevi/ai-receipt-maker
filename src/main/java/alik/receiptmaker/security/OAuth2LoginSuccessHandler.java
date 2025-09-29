@@ -1,5 +1,6 @@
 package alik.receiptmaker.security;
 
+import alik.receiptmaker.auth.JwtService;
 import alik.receiptmaker.auth.LoginService;
 import alik.receiptmaker.user.CustomOAuth2User;
 import alik.receiptmaker.user.persistence.AppUser;
@@ -18,7 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final LoginService loginService;
+    private final JwtService jwtService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -26,7 +27,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         CustomOAuth2User oauth2User = (CustomOAuth2User) authentication.getPrincipal();
         AppUser user = oauth2User.getAppUser();
 
-        var loginResponse = loginService.generateLoginResponse(user);
+        var loginResponse = jwtService.generateLoginResponse(user);
         String token = loginResponse.getAccessToken();
 
 //        response.setContentType("application/json");
