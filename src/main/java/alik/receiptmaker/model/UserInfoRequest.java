@@ -2,11 +2,13 @@ package alik.receiptmaker.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserInfoRequest {
     private String favoriteCuisine;
     private Set<String> dislikedIngredients;

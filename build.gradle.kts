@@ -44,6 +44,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.12")
+
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }
 
 dependencyManagement {

@@ -19,9 +19,10 @@ public class UserInfoController {
     private final UserInfoService userInfoService;
 
     @GetMapping
-    public ResponseEntity<UserInfo> getUserInfo() {
+    public UserInfo getUserInfo() {
         UserInfo userInfo = userInfoService.getUserInfo();
-        return ResponseEntity.ok(userInfo);
+        System.out.println(userInfo);
+        return userInfo;
     }
 
     @PostMapping
