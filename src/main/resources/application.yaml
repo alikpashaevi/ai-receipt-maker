@@ -1,6 +1,11 @@
 spring:
+  jpa:
+    properties:
+      hibernate:
+        default_schema: receipts
+        ddl-auto: none
   application:
-    name: receipt-maker
+    name: receipt-makerS
   datasource:
     url: ${RECEIPT_MAKER_DB_URL}
     username: ${RECEIPT_MAKER_USER}

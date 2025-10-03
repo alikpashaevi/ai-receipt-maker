@@ -5,9 +5,7 @@ import alik.receiptmaker.persistence.UserHistory;
 import alik.receiptmaker.service.UserHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +22,11 @@ public class UserHistoryController {
     @GetMapping
     public List<UserHistoryDTO> getUserHistory() {
         return userHistoryService.getUserHistory();
+    }
+
+    @PostMapping("/{recipeId}")
+    public void addToHistory(@PathVariable long recipeId) {
+        userHistoryService.addToHistory(recipeId);
     }
 
 }

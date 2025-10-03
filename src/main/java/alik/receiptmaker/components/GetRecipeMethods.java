@@ -24,4 +24,8 @@ public class GetRecipeMethods {
         return recipesRepo.existsByName(name);
     }
 
+    public boolean existsById(long id) {
+        return recipesRepo.existsById(id);
+    }
+
 }

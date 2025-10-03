@@ -51,32 +51,52 @@ public class UserHistoryService {
             AppUser user = userService.getUser(GetUsername.getUsernameFromToken());
             Recipes recipeToAdd = getRecipeMethods.getRecipeByName(dishName);
 
-            if (userHistoryRepo.findAll().size() > 5) {
-                UserHistory oldestEntry = userHistoryRepo.findTopByUserOrderByViewedAtAsc(user);
-                if (oldestEntry != null) {
-                    userHistoryRepo.delete(oldestEntry);
-                }
-            }
-
-            if (userHistoryRepo.existsByUserAndRecipe(user, recipeToAdd)) {
-                UserHistory existingEntry = userHistoryRepo.findByUserAndRecipe(user, recipeToAdd);
-                if (existingEntry != null) {
-                    existingEntry.setViewedAt(LocalDateTime.now());
-                    userHistoryRepo.save(existingEntry);
-                    return;
-                }
-            }
-
-            UserHistory userHistory = new UserHistory();
-            userHistory.setUser(user);
-            userHistory.setRecipe(recipeToAdd);
-            userHistory.setViewedAt(LocalDateTime.now());
-
-            userHistoryRepo.save(userHistory);
+            findUserLastFoods(user, recipeToAdd);
         } else {
             throw new RuntimeException("Recipe with this name does not exist");
         }
 
+    }
+
+    @Transactional
+    public void addToHistory(long dishId) {
+        if (getRecipeMethods.existsById(dishId)) {
+            AppUser user = userService.getUser(GetUsername.getUsernameFromToken());
+            Recipes recipeToAdd = getRecipeMethods.getRecipeById(dishId);
+
+            findUserLastFoods(user, recipeToAdd);
+        } else {
+            throw new RuntimeException("Recipe with this name does not exist");
+        }
+
+    }
+
+    private void findUserLastFoods(AppUser user, Recipes recipeToAdd) {
+        if (userHistoryRepo.findAll().size() > 10) {
+            UserHistory oldestEntry = userHistoryRepo.findTopByUserOrderByViewedAtAsc(user);
+            System.out.println("Oldest entry to be removed: " + oldestEntry);
+            List<String> allEntries = userHistoryRepo.findAll().stream().map(userHistory -> userHistory.getRecipe().getName()).toList();
+            System.out.println("each recipe: " + allEntries);
+            if (oldestEntry != null) {
+                userHistoryRepo.delete(oldestEntry);
+            }
+        }
+
+        if (userHistoryRepo.existsByUserAndRecipe(user, recipeToAdd)) {
+            UserHistory existingEntry = userHistoryRepo.findByUserAndRecipe(user, recipeToAdd);
+            if (existingEntry != null) {
+                existingEntry.setViewedAt(LocalDateTime.now());
+                userHistoryRepo.save(existingEntry);
+                return;
+            }
+        }
+
+        UserHistory userHistory = new UserHistory();
+        userHistory.setUser(user);
+        userHistory.setRecipe(recipeToAdd);
+        userHistory.setViewedAt(LocalDateTime.now());
+
+        userHistoryRepo.save(userHistory);
     }
 
 }

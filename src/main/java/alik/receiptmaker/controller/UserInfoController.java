@@ -21,7 +21,6 @@ public class UserInfoController {
     @GetMapping
     public UserInfo getUserInfo() {
         UserInfo userInfo = userInfoService.getUserInfo();
-        System.out.println(userInfo);
         return userInfo;
     }
 
