@@ -84,7 +84,7 @@ public class RecipeService {
 
             String chatResponse = """
                     {
-                      "recipe": {
+                      "recipeResponse": {
                         "dish_name": "One-Pan Roasted Feta and Vegetable Pasta",
                         "ingredients": [
                           "250g penne pasta",
@@ -120,7 +120,7 @@ public class RecipeService {
                         "estimated_time_minutes": 45,
                         "servings": 4
                       },
-                      "nutrition": {
+                      "nutritionResponse": {
                         "calories": 205,
                         "fat": 12,
                         "protein": 8,
@@ -172,32 +172,35 @@ public class RecipeService {
             System.out.println("trimmedString = " + trimmedString);
 
             try {
-                NutritionAndRecipe recipe = objectMapper.readValue(trimmedString, NutritionAndRecipe.class);
-//                NutritionAndRecipe nutritionAndRecipe = new NutritionAndRecipe();
-//                nutritionAndRecipe.setRecipeResponse(recipe);
-//                if (recipesRepo.existsByName(recipe.getDish_name())) {
-//                    Recipes existingRecipe = recipesRepo.findByDishName(recipe.getDish_name()).get();
-//                    recipe.setRecipeId(existingRecipe.getId());
-//                    recipe.setNutritionId(existingRecipe.getNutrition().getId());
-//                    userHistoryService.addToHistory(recipe.getDish_name());
-//                    if (recipe.getNutritionId() != null) {
-//                        nutritionAndRecipe.setNutritionResponse(nutritionService.getNutritionById(recipe.getNutritionId()));
-//                    }
-//                } else {
-//                    if (recipe.getNutritionId() == null || nutritionService.getNutritionById(recipe.getNutritionId()) == null) {
+                NutritionAndRecipe recipeAndNutrition = objectMapper.readValue(trimmedString, NutritionAndRecipe.class);
+                NutritionAndRecipe nutritionAndRecipe = new NutritionAndRecipe();
+                nutritionAndRecipe.setRecipeResponse(recipeAndNutrition.getRecipeResponse());
+                nutritionAndRecipe.setNutritionResponse(recipeAndNutrition.getNutritionResponse());
+                System.out.println("successfully parsed AI response");
+                if (recipesRepo.existsByName(recipeAndNutrition.getRecipeResponse().getDish_name())) {
+                    Recipes existingRecipe = recipesRepo.findByDishName(recipeAndNutrition.getRecipeResponse().getDish_name()).get();
+                    RecipeResponse recipe = recipeAndNutrition.getRecipeResponse();
+                    recipe.setRecipeId(existingRecipe.getId());
+                    recipe.setNutritionId(existingRecipe.getNutrition().getId());
+                    userHistoryService.addToHistory(recipe.getDish_name());
+
+                } else {
+
 //                        NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
 //                        System.out.println("nutrition = " + nutrition);
-//
+
 //                        nutritionAndRecipe.setNutritionResponse(nutrition);
-//                        saveRecipe(nutritionAndRecipe);
-//                            // set the recipeId after saving
-//                        nutritionAndRecipe.getRecipeResponse().setRecipeId(recipesRepo.findByDishName(recipe.getDish_name()).get().getId());
-//                        nutritionAndRecipe.getRecipeResponse().setNutritionId(recipesRepo.findByDishName(recipe.getDish_name()).get().getNutrition().getId());
-////                        if (recipesRepo.findByDishName(recipe.getNu))
-//                        userHistoryService.addToHistory(recipe.getDish_name());
-//                    }
-//                }
-                return recipe;
+                    System.out.println("before saving recipe");
+                        saveRecipe(nutritionAndRecipe);
+                        System.out.println("after saving recipe");
+                            // set the recipeId after saving
+                        nutritionAndRecipe.getRecipeResponse().setRecipeId(recipesRepo.findByDishName(recipeAndNutrition.getRecipeResponse().getDish_name()).get().getId());
+                        nutritionAndRecipe.getRecipeResponse().setNutritionId(recipesRepo.findByDishName(recipeAndNutrition.getRecipeResponse().getDish_name()).get().getNutrition().getId());
+//                        if (recipesRepo.findByDishName(recipe.getNu))
+                        userHistoryService.addToHistory(recipeAndNutrition.getRecipeResponse().getDish_name());
+
+                }
+                return recipeAndNutrition;
 
             } catch (Exception e) {
                 throw new RuntimeException("Failed to parse AI recipe response", e);
@@ -218,10 +221,9 @@ public class RecipeService {
         recipe.setNormalizedIngredients(normalizedIngredients);
         recipe.setEstimatedTime(nutritionAndRecipe.getRecipeResponse().getEstimated_time_minutes());
         recipe.setServings(nutritionAndRecipe.getRecipeResponse().getServings());
-        if (nutritionAndRecipe.getNutritionResponse() != null) {
-            System.out.println(nutritionAndRecipe.getNutritionResponse());
-            recipe.setNutrition(nutritionService.saveNutritionInfo(nutritionAndRecipe.getNutritionResponse()));
-        }
+
+        System.out.println(nutritionAndRecipe.getNutritionResponse());
+        recipe.setNutrition(nutritionService.saveNutritionInfo(nutritionAndRecipe.getNutritionResponse()));
 
         recipesRepo.save(recipe);
     }
