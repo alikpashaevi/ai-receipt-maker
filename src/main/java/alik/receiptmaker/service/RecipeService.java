@@ -48,17 +48,17 @@ public class RecipeService {
         );
 
         int size = userPastFoods.size();
-        List<String> lastFiveFoods;
+        List<String> lastTenFoods;
         if (size > 5) {
-            lastFiveFoods = userPastFoods.subList(size - 5, size);
+            lastTenFoods = userPastFoods.subList(size - 10, size);
         } else {
-            lastFiveFoods = userPastFoods;
+            lastTenFoods = userPastFoods;
         }
-        System.out.println("lastFiveFoods = " + lastFiveFoods);
+        System.out.println("lastTenFoods = " + lastTenFoods);
         System.out.println("ingredients = " + ingredients);
         List<Recipes> candidateRecipes = recipesRepo.findByAllIngredients(ingredients)
                 .stream()
-                .filter(r -> !lastFiveFoods.contains(r.getName()))
+                .filter(r -> !lastTenFoods.contains(r.getName()))
                 .toList();
 
         System.out.println("candidateRecipes = " + candidateRecipes);
@@ -82,100 +82,127 @@ public class RecipeService {
             Set<String> allergies = userInfo.getAllergies();
             Set<String> dislikedIngredients = userInfo.getDislikedIngredients();
 
-            String chatResponse = "{\n" +
-                    "  \"dish_name\": \"Rice\",\n" +
-                    "  \"ingredients\": [\n" +
-                    "    \"2 boneless, skinless chicken breasts, cut into 1-inch pieces\",\n" +
-                    "    \"1 large head of broccoli, cut into florets\",\n" +
-                    "    \"1 tbsp sesame oil\",\n" +
-                    "    \"2 cloves garlic, minced\",\n" +
-                    "    \"1 tbsp grated ginger\",\n" +
-                    "    \"1/4 cup soy sauce\",\n" +
-                    "    \"1 tbsp honey or maple syrup\",\n" +
-                    "    \"1 tsp cornstarch\",\n" +
-                    "    \"Cooked rice, for serving\"\n" +
-                    "  ],\n" +
-                    "  \"instructions\": [\n" +
-                    "    \"In a small bowl, whisk together the soy sauce, honey, and cornstarch. Set aside.\",\n" +
-                    "    \"Heat sesame oil in a large skillet or wok over medium-high heat. Add the chicken and cook until browned on all sides. Remove the chicken from the skillet.\",\n" +
-                    "    \"Add the broccoli florets to the same skillet and stir-fry for 3-4 minutes until they are bright green and slightly tender. Add the garlic and ginger, and cook for another minute until fragrant.\",\n" +
-                    "    \"Return the cooked chicken to the skillet. Pour the soy sauce mixture over the chicken and broccoli. Cook, stirring constantly, for 1-2 minutes until the sauce thickens and coats everything.\",\n" +
-                    "    \"Serve immediately over cooked rice.\"\n" +
-                    "  ],\n" +
-                    "  \"normalized_ingredients\": [\n" +
-                    "    \"chicken breasts\",\n" +
-                    "    \"broccoli\"\n" +
-                    "  ],\n" +
-                    "  \"estimated_time_minutes\": 25,\n" +
-                    "  \"servings\": 4\n" +
-                    "}";
+            String chatResponse = """
+                    {
+                      "recipe": {
+                        "dish_name": "One-Pan Roasted Feta and Vegetable Pasta",
+                        "ingredients": [
+                          "250g penne pasta",
+                          "1 large zucchini, chopped into 1-inch cubes",
+                          "300g cherry tomatoes",
+                          "200g block of feta cheese",
+                          "4 tbsp olive oil",
+                          "2 cloves garlic, minced",
+                          "1 tsp dried oregano",
+                          "1/2 tsp black pepper",
+                          "Fresh basil leaves, for garnish"
+                        ],
+                        "instructions": [
+                          "Preheat oven to 400 Degrees celsius.",
+                          "In an oven-safe dish, toss zucchini, cherry tomatoes, 3 tbsp of olive oil, minced garlic, oregano, and black pepper.",
+                          "Place the block of feta cheese in the center of the vegetables and drizzle with the remaining 1 tbsp of olive oil.",
+                          "Bake for 30 minutes, or until tomatoes are blistered and feta is soft and slightly browned.",
+                          "While baking, cook the penne pasta according to package directions until al dente. Reserve 1/2 cup of pasta water.",
+                          "Carefully remove the dish from the oven. Mash the feta and vegetables with a fork to create a creamy sauce. Stir in reserved pasta water to reach desired consistency.",
+                          "Add the drained pasta to the sauce and toss to combine. Garnish generously with fresh basil leaves before serving."
+                        ],
+                        "normalized_ingredients": [
+                          "penne pasta",
+                          "zucchini",
+                          "cherry tomatoes",
+                          "feta cheese",
+                          "olive oil",
+                          "garlic",
+                          "oregano",
+                          "black pepper",
+                          "basil"
+                        ],
+                        "estimated_time_minutes": 45,
+                        "servings": 4
+                      },
+                      "nutrition": {
+                        "calories": 205,
+                        "fat": 12,
+                        "protein": 8,
+                        "carbs": 21
+                      }
+                    }
+                    """;
 
-//            String chatResponse = chatModel.call(
-//                    "You are a helpful cooking assistant. Your task is to suggest a dish based on the user's ingredients and preferences. \n" +
-//                            "\n" +
-//                            "⚠️ IMPORTANT: Return the response in **valid JSON only** with this exact structure:\n" +
-//                            "{\n" +
-//                            "  \"dish_name\": \"string\",\n" +
-//                            "  \"ingredients\": [\"1 tbsp olive oil\", \"2 cloves garlic, minced\", \"1 tsp black pepper\"],\n" +
-//                            "  \"instructions\": [\"step 1\", \"step 2\", \"step 3\"],\n" +
-//                            "  \"normalized_ingredients\": [\"garlic\", \"pepper\"],\n" +
-//                            "  \"estimated_time_minutes\": number,\n" +
-//                            "  \"servings\": number\n" +
-//                            "}\n" +
-//                            "\n" +
-//                            "CRITICAL FORMATTING RULES:\n" +
-//                            "1. **normalized_user_ingredients**: This must be a simple list of the base ingredient names provided by the user. Normalize them: remove all quantities, measurements, and preparation notes (e.g., '2 cloves of minced garlic' -> 'garlic').\n" +
-//                            "2. **ingredients**: This is the list of ingredients *for the recipe you are suggesting*, including the required quantities and preparations.\n" +
-//                            "\n" +
-//                            "User ingredients: " + ingredients + "\n" +
-//                            "User preferences: vegetarian = " + vegetarian + ", vegan = " + vegan + "\n" +
-//                            "User disliked ingredients: " + dislikedIngredients + ", allergies =" + allergies + "\n" +
-//                            "Try to not suggest the same dishes as last time. Last 5 dishes: " + lastFiveFoods + "\n"
-//            );
+//            String chatResponse = chatModel.call("""
+//                You are a helpful cooking assistant. Your task is to suggest a dish based on the user's ingredients and preferences.
+//
+//                ⚠️ IMPORTANT: Return the response in **valid JSON only** with this exact structure:
+//                {
+//                  "recipe": {
+//                    "dish_name": "string",
+//                    "ingredients": ["1 tbsp olive oil", "2 cloves garlic, minced", "1 tsp black pepper"],
+//                    "instructions": ["step 1", "step 2", "step 3"],
+//                    "normalized_ingredients": ["garlic", "pepper"],
+//                    "estimated_time_minutes": number,
+//                    "servings": number
+//                  },
+//                  "nutrition": {
+//                    "calories": number,
+//                    "fat": number,
+//                    "protein": number,
+//                    "carbs": number
+//                  }
+//                }
+//
+//                CRITICAL FORMATTING RULES:
+//                1. **normalized_ingredients**: This must be a simple list of the base ingredient names used in the recipe. Normalize them: remove all quantities, measurements, and preparation notes (e.g., '2 cloves of minced garlic' -> 'garlic')
+//                2. **ingredients**: This is the list of ingredients *for the recipe you are suggesting*, including the required quantities and preparations
+//                3. Each nutrition value should be for per 100 grams and should be included in the "nutrition" object
+//
+//                User ingredients: %s
+//                User preferences: vegetarian = %s, vegan = %s
+//                User disliked ingredients: %s, allergies = %s
+//                Try to not suggest the same dishes as last time. Last 5 dishes: %s
+//                """.formatted(ingredients, vegetarian, vegan, dislikedIngredients, allergies, lastTenFoods));
 
-
+            System.out.println("chatResponse = " + chatResponse);
             int startIndex = chatResponse.indexOf('{');
             int endIndex = chatResponse.lastIndexOf('}');
 
+            String trimmedString = chatResponse;
             if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
-                String trimmedString = chatResponse.substring(startIndex, endIndex + 1);
-                try {
-                    RecipeResponse recipe = objectMapper.readValue(trimmedString, RecipeResponse.class);
-                    NutritionAndRecipe nutritionAndRecipe = new NutritionAndRecipe();
-                    nutritionAndRecipe.setRecipeResponse(recipe);
-                    if (recipesRepo.existsByName(recipe.getDish_name())) {
-                        Recipes existingRecipe = recipesRepo.findByDishName(recipe.getDish_name()).get();
-                        recipe.setRecipeId(existingRecipe.getId());
-                        recipe.setNutritionId(existingRecipe.getNutrition().getId());
-                        userHistoryService.addToHistory(recipe.getDish_name());
-                        if (recipe.getNutritionId() != null) {
-                            nutritionAndRecipe.setNutritionResponse(nutritionService.getNutritionById(recipe.getNutritionId()));
-                        }
-                    } else {
-                        if (recipe.getNutritionId() == null || nutritionService.getNutritionById(recipe.getNutritionId()) == null) {
-                            NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
-                            System.out.println("nutrition = " + nutrition);
+                trimmedString = chatResponse.substring(startIndex, endIndex + 1);
+            }
+            System.out.println("trimmedString = " + trimmedString);
 
-                            nutritionAndRecipe.setNutritionResponse(nutrition);
-                            saveRecipe(nutritionAndRecipe);
-                                // set the recipeId after saving
-                            nutritionAndRecipe.getRecipeResponse().setRecipeId(recipesRepo.findByDishName(recipe.getDish_name()).get().getId());
-                            nutritionAndRecipe.getRecipeResponse().setNutritionId(recipesRepo.findByDishName(recipe.getDish_name()).get().getNutrition().getId());
-    //                        if (recipesRepo.findByDishName(recipe.getNu))
-                            userHistoryService.addToHistory(recipe.getDish_name());
-                        }
-                    }
-                    return nutritionAndRecipe;
+            try {
+                NutritionAndRecipe recipe = objectMapper.readValue(trimmedString, NutritionAndRecipe.class);
+//                NutritionAndRecipe nutritionAndRecipe = new NutritionAndRecipe();
+//                nutritionAndRecipe.setRecipeResponse(recipe);
+//                if (recipesRepo.existsByName(recipe.getDish_name())) {
+//                    Recipes existingRecipe = recipesRepo.findByDishName(recipe.getDish_name()).get();
+//                    recipe.setRecipeId(existingRecipe.getId());
+//                    recipe.setNutritionId(existingRecipe.getNutrition().getId());
+//                    userHistoryService.addToHistory(recipe.getDish_name());
+//                    if (recipe.getNutritionId() != null) {
+//                        nutritionAndRecipe.setNutritionResponse(nutritionService.getNutritionById(recipe.getNutritionId()));
+//                    }
+//                } else {
+//                    if (recipe.getNutritionId() == null || nutritionService.getNutritionById(recipe.getNutritionId()) == null) {
+//                        NutritionResponse nutrition = nutritionService.getNutritionInfo(recipe);
+//                        System.out.println("nutrition = " + nutrition);
+//
+//                        nutritionAndRecipe.setNutritionResponse(nutrition);
+//                        saveRecipe(nutritionAndRecipe);
+//                            // set the recipeId after saving
+//                        nutritionAndRecipe.getRecipeResponse().setRecipeId(recipesRepo.findByDishName(recipe.getDish_name()).get().getId());
+//                        nutritionAndRecipe.getRecipeResponse().setNutritionId(recipesRepo.findByDishName(recipe.getDish_name()).get().getNutrition().getId());
+////                        if (recipesRepo.findByDishName(recipe.getNu))
+//                        userHistoryService.addToHistory(recipe.getDish_name());
+//                    }
+//                }
+                return recipe;
 
-                } catch (Exception e) {
-                    throw new RuntimeException("Failed to parse AI recipe response", e);
-                }
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to parse AI recipe response", e);
+            }
         }
-
-        }
-
-
-        throw new RuntimeException("AI response did not contain valid JSON");
     }
 
     public void saveRecipe(NutritionAndRecipe nutritionAndRecipe) {

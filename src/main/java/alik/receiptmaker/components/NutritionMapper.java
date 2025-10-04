@@ -12,11 +12,10 @@ public class NutritionMapper {
         }
 
         NutritionResponse response = new NutritionResponse();
-        response.setRecipesUsed(1); // or set dynamically if needed
-        response.setCalories(new NutritionInfo(nutrition.getCalories(), "kcal"));
-        response.setFat(new NutritionInfo(nutrition.getFat(), "g"));
-        response.setProtein(new NutritionInfo(nutrition.getProtein(), "g"));
-        response.setCarbs(new NutritionInfo(nutrition.getCarbs(), "g"));
+        response.setCalories(nutrition.getCalories());
+        response.setFat(nutrition.getFat());
+        response.setProtein(nutrition.getProtein());
+        response.setCarbs(nutrition.getCarbs());
 
         return response;
     }

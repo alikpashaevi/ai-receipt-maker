@@ -6,6 +6,7 @@ import alik.receiptmaker.model.NutritionResponse;
 import alik.receiptmaker.model.RecipeResponse;
 import alik.receiptmaker.persistence.Nutrition;
 import alik.receiptmaker.persistence.NutritionRepo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,34 +17,24 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class NutritionService {
 
     private final NutritionRepo nutritionRepo;
-    private final WebClient webClient;
-    private final String apiKey;
+
 
     public NutritionResponse getNutritionInfo(RecipeResponse recipeResponse) {
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/recipes/guessNutrition")
-                        .queryParam("title", recipeResponse.getDish_name())
-                        .queryParam("apiKey", apiKey)
-                        .build())
-                .retrieve()
-                .bodyToMono(NutritionResponse.class)
-                .block();
+        return null;
     }
 
     public NutritionResponse getNutritionById(long id) {
         return nutritionRepo.findById(id)
                 .map(NutritionMapper::toResponse)
                 .orElse(null);
-
     }
 
     public Nutrition saveNutritionInfo(NutritionResponse nutritionResponse) {
         Nutrition nutrition = new Nutrition();
-        nutrition.setCalories(nutritionResponse.getCalories().getValue());
-        nutrition.setProtein(nutritionResponse.getProtein().getValue());
-        nutrition.setFat(nutritionResponse.getFat().getValue());
-        nutrition.setCarbs(nutritionResponse.getCarbs().getValue());
+        nutrition.setCalories(nutritionResponse.getCalories());
+        nutrition.setProtein(nutritionResponse.getProtein());
+        nutrition.setFat(nutritionResponse.getFat());
+        nutrition.setCarbs(nutritionResponse.getCarbs());
         nutritionRepo.save(nutrition);
         return nutrition;
     }

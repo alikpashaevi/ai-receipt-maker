@@ -16,15 +16,15 @@ public class Nutrition {
     private long id;
 
     @Column(name = "calories")
-    private int calories;
+    private String calories;
 
     @Column(name = "fat")
-    private int fat;
+    private String fat;
 
     @Column(name = "protein")
-    private int protein;
+    private String protein;
 
     @Column(name = "carbs")
-    private int carbs;
+    private String carbs;
 
 }

@@ -5,14 +5,12 @@ import lombok.Data;
 
 @Data
 public class NutritionResponse {
-    @JsonProperty("recipesUsed")
-    private int recipesUsed;
     @JsonProperty("calories")
-    private NutritionInfo calories;
+    private String calories;
     @JsonProperty("fat")
-    private NutritionInfo fat;
+    private String fat;
     @JsonProperty("protein")
-    private NutritionInfo protein;
+    private String protein;
     @JsonProperty("carbs")
-    private NutritionInfo carbs;
+    private String carbs;
 }
