@@ -39,7 +39,7 @@ public class UserHistoryService {
     public List<UserHistoryDTO> getUserHistory() {
         AppUser user = userService.getUser(GetUsername.getUsernameFromToken());
 
-        List<UserHistory> userHistory = userHistoryRepo.findTop5ByUserOrderByViewedAtDesc(user);
+        List<UserHistory> userHistory = userHistoryRepo.findTop10ByUserOrderByViewedAtDesc(user);
         return userHistory.stream()
                 .map(this::mapUserHistoryToDto)
                 .toList();
@@ -72,7 +72,7 @@ public class UserHistoryService {
     }
 
     private void findUserLastFoods(AppUser user, Recipes recipeToAdd) {
-        if (userHistoryRepo.findAll().size() > 10) {
+        if (userHistoryRepo.findTop10ByUserOrderByViewedAtDesc(user).size() > 10) {
             UserHistory oldestEntry = userHistoryRepo.findTopByUserOrderByViewedAtAsc(user);
             System.out.println("Oldest entry to be removed: " + oldestEntry);
             List<String> allEntries = userHistoryRepo.findAll().stream().map(userHistory -> userHistory.getRecipe().getName()).toList();

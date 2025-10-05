@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface UserHistoryRepo extends JpaRepository<UserHistory, Long> {
-    List<UserHistory> findTop5ByUserOrderByViewedAtDesc(AppUser user);
+    List<UserHistory> findTop10ByUserOrderByViewedAtDesc(AppUser user);
 
     UserHistory findTopByUserOrderByViewedAtAsc(AppUser user);
 
