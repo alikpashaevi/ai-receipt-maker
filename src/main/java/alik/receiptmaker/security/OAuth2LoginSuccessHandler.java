@@ -32,6 +32,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 //        response.setContentType("application/json");
 //        response.getWriter().write(objectMapper.writeValueAsString(loginResponse));
-        response.sendRedirect("http://localhost:3000/oauth2/success?token=" + token);
+        boolean firstLogin = user.getFirstLogin();
+        response.sendRedirect("http://localhost:3000/oauth2/success?token=" + token + "&firstLogin=" + firstLogin);
     }
 }

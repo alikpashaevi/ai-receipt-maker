@@ -76,6 +76,9 @@ public class RecipeService {
             return result;
         } else {
             UserInfo userInfo = userInfoService.getUserInfoByUserId(user.getId());
+            if(userInfo == null) {
+                throw new NotFoundException("User info not found. Please set your dietary preferences first.");
+            }
 
             boolean vegetarian = userInfo.isVegetarian();
             boolean vegan = userInfo.isVegan();
@@ -134,7 +137,7 @@ public class RecipeService {
 //
 //                ⚠️ IMPORTANT: Return the response in **valid JSON only** with this exact structure:
 //                {
-//                  "recipe": {
+//                  "recipeResponse": {
 //                    "dish_name": "string",
 //                    "ingredients": ["1 tbsp olive oil", "2 cloves garlic, minced", "1 tsp black pepper"],
 //                    "instructions": ["step 1", "step 2", "step 3"],
@@ -142,7 +145,7 @@ public class RecipeService {
 //                    "estimated_time_minutes": number,
 //                    "servings": number
 //                  },
-//                  "nutrition": {
+//                  "nutritionResponse": {
 //                    "calories": number,
 //                    "fat": number,
 //                    "protein": number,

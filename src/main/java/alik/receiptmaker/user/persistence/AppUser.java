@@ -66,6 +66,8 @@ public class AppUser {
     @JsonManagedReference
     private List<Recipes> history = new ArrayList<>();
 
+    @Column(name = "first_login")
+    private Boolean firstLogin;
 
     @Override
     public String toString() {

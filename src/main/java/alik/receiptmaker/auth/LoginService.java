@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LoginService {
 
-
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;

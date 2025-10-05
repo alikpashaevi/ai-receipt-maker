@@ -1,0 +1,1 @@
+ALTER TABLE receipts.app_user ADD COLUMN first_login BOOLEAN DEFAULT TRUE NOT NULL;

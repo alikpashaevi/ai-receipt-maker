@@ -21,3 +21,5 @@ databaseChangeLog:
       file: db/changelog/scripts/10-CREATE-EMAIL-VERIFICATION-TABLE.sql
   - include:
       file: db/changelog/scripts/11-CREATE-NORMALIZED-INGREDIENTS-TABLE.sql
+  - include:
+      file: db/changelog/scripts/12-ALTER-USERS-TABLE-TO-ADD-FIRST-LOGIN.sql

@@ -38,6 +38,9 @@ public class UserInfoService {
         userInfo.setVegan(userInfoRequest.isVegan());
         userInfo.setGlutenFree(userInfoRequest.isGlutenFree());
         userInfo.setAppUser(user);
+        if (user.getFirstLogin()) {
+            user.setFirstLogin(false);
+        }
 
         userInfoRepo.save(userInfo);
     }

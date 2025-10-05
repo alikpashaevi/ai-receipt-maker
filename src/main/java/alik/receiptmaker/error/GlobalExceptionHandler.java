@@ -1,6 +1,5 @@
 package alik.receiptmaker.error;
 
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,8 +21,8 @@ public class GlobalExceptionHandler {
                 .body(new ErrorDTO("invalid-request", errorMessage));
     }
 
-    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
-    public ResponseEntity<ErrorDTO> handleNotFoundException(ChangeSetPersister.NotFoundException ex) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorDTO> handleNotFoundException(NotFoundException ex) {
         ErrorDTO errorDTO = new ErrorDTO("not-found", ex.getMessage());
         return ResponseEntity.status(404).body(errorDTO);
     }

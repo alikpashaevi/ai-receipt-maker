@@ -34,7 +34,7 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return this.appUser.getUsername(); // Or this.appUser.getEmail();
+        return this.appUser.getUsername();
     }
 
     // Convenience method to get the database ID for JWT generation

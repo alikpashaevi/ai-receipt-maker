@@ -32,7 +32,7 @@ public class JwtService {
             SignedJWT signedJWT = new SignedJWT(header, claims);
             signedJWT.sign(new MACSigner(secretKey.getBytes()));
 
-            return new LoginResponse(signedJWT.serialize());
+            return new LoginResponse(signedJWT.serialize(), user.getFirstLogin());
         } catch (Exception e) {
             throw new InvalidLoginException("Error generating JWT token");
         }
