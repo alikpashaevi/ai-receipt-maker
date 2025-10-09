@@ -60,16 +60,6 @@ public class UserService {
         return user.getFavorites().stream().map(this::mapUserFavoritesDTO).collect(Collectors.toSet());
     }
 
-//    public Recipes getUserFavoriteById(Long id) {
-//        String username = GetUsername.getUsernameFromToken();
-//        System.out.println("Username from token: " + username);
-//        AppUser user = getUser(username);
-//        return user.getFavorites().stream()
-//                .filter(recipe -> recipe.getId() == id)
-//                .findFirst()
-//                .orElseThrow(() -> new NotFoundException("Favorite recipe not found"));
-//    }
-
     public void addToFavorites(Long receiptId) {
         String username = GetUsername.getUsernameFromToken();
         AppUser user = getUser(username);

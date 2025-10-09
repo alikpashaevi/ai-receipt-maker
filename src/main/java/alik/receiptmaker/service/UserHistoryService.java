@@ -74,9 +74,7 @@ public class UserHistoryService {
     private void findUserLastFoods(AppUser user, Recipes recipeToAdd) {
         if (userHistoryRepo.findTop10ByUserOrderByViewedAtDesc(user).size() > 10) {
             UserHistory oldestEntry = userHistoryRepo.findTopByUserOrderByViewedAtAsc(user);
-            System.out.println("Oldest entry to be removed: " + oldestEntry);
-            List<String> allEntries = userHistoryRepo.findAll().stream().map(userHistory -> userHistory.getRecipe().getName()).toList();
-            System.out.println("each recipe: " + allEntries);
+//            List<String> allEntries = userHistoryRepo.findAll().stream().map(userHistory -> userHistory.getRecipe().getName()).toList();
             if (oldestEntry != null) {
                 userHistoryRepo.delete(oldestEntry);
             }

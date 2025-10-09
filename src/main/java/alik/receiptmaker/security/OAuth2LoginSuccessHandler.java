@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,8 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
-    private final ObjectMapper objectMapper;
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -30,9 +32,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         var loginResponse = jwtService.generateLoginResponse(user);
         String token = loginResponse.getAccessToken();
 
-//        response.setContentType("application/json");
-//        response.getWriter().write(objectMapper.writeValueAsString(loginResponse));
         boolean firstLogin = user.getFirstLogin();
-        response.sendRedirect("http://localhost:3000/oauth2/success?token=" + token + "&firstLogin=" + firstLogin);
+        response.sendRedirect(frontendUrl + "/oauth2/success?token=" + token + "&firstLogin=" + firstLogin);
     }
 }

@@ -13,16 +13,4 @@ public class ReceiptMakerApplication {
         SpringApplication.run(ReceiptMakerApplication.class, args);
     }
 
-//    @Bean
-//    CommandLineRunner commandLineRunner(ChatClient.Builder builder) {
-//        return (String... args) -> {
-//            var client = builder.build();
-//            String response = client.prompt("Tell me an interesting fact about google")
-//                    .call()
-//                    .content();
-//
-//            System.out.println(response);
-//        };
-//    }
-
 }
