@@ -1,6 +1,6 @@
 package alik.receiptmaker.controller;
 
-import alik.receiptmaker.service.EmailService;
+import alik.receiptmaker.service.GmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class EmailController {
 
-    private final EmailService emailService;
+    private final GmailService gmailService;
 
     @PostMapping
     public ResponseEntity<Void> sendEmail(@RequestParam String email, @RequestParam String subject, @RequestParam String body) {
-        emailService.sendEmail(email, subject, body);
+        gmailService.sendEmail(email, subject, body);
         return ResponseEntity.ok().build();
     }
 

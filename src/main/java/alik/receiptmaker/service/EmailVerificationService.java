@@ -16,7 +16,7 @@ import java.util.Optional;
 public class EmailVerificationService {
 
     private final EmailVerificationRepo emailVerificationRepo;
-    private final EmailService emailService;
+    private final GmailService gmailService;
 
     @Transactional
     public void sendVerificationCode(EmailRequest email) {
@@ -32,21 +32,21 @@ public class EmailVerificationService {
         emailVerification.setExpirationTime(expirationTime);
         emailVerificationRepo.save(emailVerification);
 
-        emailService.sendVerificationEmail(email.getEmail(), code);
+        gmailService.sendEmail(email.getEmail(), "Verification Code", code);
 
     }
 
     @Transactional
-    public boolean verifyCode(String email, String code) {
+    public void verifyCode(String email, String code) {
         Optional<EmailVerification> verificationOpt = emailVerificationRepo.findByEmail(email);
 
-        if (verificationOpt.isEmpty()) return false;
+        if (verificationOpt.isEmpty()) return;
 
         EmailVerification verification = verificationOpt.get();
 
         if (verification.getExpirationTime().isBefore(LocalDateTime.now())) {
             emailVerificationRepo.deleteByEmail(email);
-            return false;
+            return;
         }
 
         boolean isValid = verification.getCode().equals(code);
@@ -54,7 +54,6 @@ public class EmailVerificationService {
         if (isValid) {
             emailVerificationRepo.deleteByEmail(email);
         }
-        return isValid;
 
     }
 
