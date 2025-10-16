@@ -50,20 +50,20 @@ public class GmailService {
     }
 
     public void sendEmail(String to, String subject, String bodyText) {
-        System.out.println("refresh token: " + refreshToken);
         try {
             Gmail gmail = getGmailService();
-            System.out.println("whatever this is" + gmail);
 
             MimeMessage email = createEmail(to, fromEmail, subject, bodyText);
-            System.out.println("Email created: " + email);
             Message message = createMessageWithEmail(email);
-            System.out.println("Message created: " + message);
             gmail.users().messages().send("me", message).execute();
-            System.out.println("✅ Email sent to " + to);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void sendEmailToSelf(String from, String subject, String bodyText) {
+        sendEmail(fromEmail, subject, " Email From: " + from + "\n\nMessage: " + bodyText);
     }
 
     private static MimeMessage createEmail(String to, String from, String subject, String bodyText) throws MessagingException {

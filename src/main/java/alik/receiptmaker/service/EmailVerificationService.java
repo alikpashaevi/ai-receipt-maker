@@ -32,7 +32,7 @@ public class EmailVerificationService {
         emailVerification.setExpirationTime(expirationTime);
         emailVerificationRepo.save(emailVerification);
 
-        gmailService.sendEmail(email.getEmail(), "Verification Code", code);
+        gmailService.sendEmail(email.getEmail(), "RecipeAI Verification Code", "Thank you for signing up for RecipeAI! Please use this code to verify your email address. This code will expire in 10 minutes. \n\n CODE: " + code);
 
     }
 

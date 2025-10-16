@@ -14,7 +14,7 @@ public class EmailController {
 
     @PostMapping
     public ResponseEntity<Void> sendEmail(@RequestParam String email, @RequestParam String subject, @RequestParam String body) {
-        gmailService.sendEmail(email, subject, body);
+        gmailService.sendEmailToSelf(email, subject, body);
         return ResponseEntity.ok().build();
     }
 
